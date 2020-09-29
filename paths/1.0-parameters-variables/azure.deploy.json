@@ -1,0 +1,32 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "provide a name for your storage account"
+            }
+        }
+    },
+    "variables": {
+        "location": "westeurope"
+    },
+    "resources": [
+        {
+            "name": "[parameters('storageAccountName')]", // will use what defined at input
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "tags": {
+                "displayName": "picture library"
+            },
+            "location": "[variables('location')]", // uses location variable
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            }
+        }
+    ],
+    "outputs": {}
+}

@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "provide a name for your storage account"
+            }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]", // sets the same location as resource group
+        "storageName": "[toLower(parameters('storageAccountName'))]" // storage only accept lower case you can control this using toLower
+    },
+    "resources": [
+        {
+            "name": "[variables('storageName')]", // will use what defined at input
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "tags": {
+                "displayName": "picture library"
+            },
+            "location": "[variables('location')]", // uses location variable
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            }
+        }
+    ],
+    "outputs": {}
+}

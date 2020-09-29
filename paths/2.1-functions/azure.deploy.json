@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "provide a name for your storage account"
+            }
+        },
+        "environment": {
+           "type": "string",
+           "metadata": {
+                "description": "provide environment for the deployment"
+            },
+            "allowedValues": [
+                "dev",
+                "prod"
+            ],
+            "defaultValue": "development" // let user provide an environment parameter
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]", // sets the same location as resource group
+        "storageName": "[concat('str',parameters('storageaccountname'))]" // here we are adding a prefix to the storage account name provided at input
+    },
+    "resources": [
+        {
+            "name": "[toLower(variables('storageName'))]", // lower case is moved here for visibility. name is the variable which is the prefix + parameter input
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "tags": {
+                "displayName": "picture library",
+                "environment": "[parameters('environment')]" // use the parameter as a tag value
+            },
+            "location": "[variables('location')]", // uses location variable
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            }
+        }
+    ],
+    "outputs": {}
+}
