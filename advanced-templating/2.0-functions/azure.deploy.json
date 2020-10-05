@@ -11,7 +11,8 @@
     },
     "variables": {
         "location": "[resourceGroup().location]", // sets the same location as resource group
-        "storageName": "[toLower(parameters('storageAccountName'))]" // storage only accept lower case you can control this using toLower
+        "storageName": "[toLower(parameters('storageAccountName'))]", // storage only accept lower case you can control this using toLower
+        "containerName": "images"
     },
     "resources": [
         {
@@ -26,7 +27,18 @@
             "sku": {
                 "name": "Premium_LRS",
                 "tier": "Premium"
-            }
+            },
+            "resources": 
+            [ // child resource
+                {
+                "type": "blobServices/containers",
+                "apiVersion": "2019-06-01",
+                "name": "[concat('default/', variables('containerName'))]",
+                "dependsOn": [
+                    "[parameters('storageAccountName')]"
+                ]
+                }
+            ]
         }
     ],
     "outputs": {}

@@ -7,16 +7,11 @@
             "metadata": {
                 "description": "provide a name for your storage account"
             }
-        },
-        "storageAccountName2": {
-            "type": "string",
-            "metadata": {
-                "description": "provide a name for your storage account"
-            }
         }
     },
     "variables": {
-        "location": "westeurope"
+        "location": "westeurope",
+        "containerName": "images"
     },
     "resources": [
         {
@@ -31,25 +26,21 @@
             "sku": {
                 "name": "Premium_LRS",
                 "tier": "Premium"
-            }
-        },
-        {
-            "name": "[parameters('storageAccountName2')]", // will use what defined at input
-            "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2019-06-01",
-            "tags": {
-                "displayName": "picture library"
             },
-            "location": "[variables('location')]", // uses location variable
-            "kind": "StorageV2",
-            "sku": {
-                "name": "Premium_LRS",
-                "tier": "Premium"
-            },
-            "dependsOn": [
-                "[parameters('storageAccountName')]" // storage2 depend on the first to deploy
+            "resources": 
+            [ // child resource
+                {
+                "type": "blobServices/containers",
+                "apiVersion": "2019-06-01",
+                "name": "[concat('default/', variables('containerName'))]",
+                "dependsOn": [
+                    "[parameters('storageAccountName')]"
+                ]
+                }
             ]
+
         }
+
     ],
     "outputs": {}
 }

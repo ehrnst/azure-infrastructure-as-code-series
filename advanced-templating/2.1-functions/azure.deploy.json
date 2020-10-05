@@ -22,7 +22,8 @@
     },
     "variables": {
         "location": "[resourceGroup().location]", // sets the same location as resource group
-        "storageName": "[concat('str',parameters('storageaccountname'))]" // here we are adding a prefix to the storage account name provided at input
+        "storageName": "[concat('str',parameters('storageaccountname'))]", // here we are adding a prefix to the storage account name provided at input
+        "containerName": "images"
     },
     "resources": [
         {
@@ -38,7 +39,18 @@
             "sku": {
                 "name": "Premium_LRS",
                 "tier": "Premium"
-            }
+            },
+            "resources": 
+            [ // child resource
+                {
+                "type": "blobServices/containers",
+                "apiVersion": "2019-06-01",
+                "name": "[concat('default/', variables('containerName'))]",
+                "dependsOn": [
+                    "[variables('storageName')]"
+                ]
+                }
+            ]
         }
     ],
     "outputs": {}
