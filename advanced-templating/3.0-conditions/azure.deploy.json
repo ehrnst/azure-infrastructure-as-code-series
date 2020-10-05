@@ -7,6 +7,28 @@
             "metadata": {
                 "description": "provide a name for your storage account"
             }
+        },
+        "environment": {
+           "type": "string",
+           "metadata": {
+                "description": "provide environment for the deployment"
+            },
+            "allowedValues": [
+                "dev",
+                "prod"
+            ],
+            "defaultValue": "dev" // let user provide an environment parameter
+        },
+        "allowAzureServices": {
+           "type": "string",
+           "metadata": {
+                "description": "provide environment for the deployment"
+            },
+            "allowedValues": [
+                "Yes",
+                "No"
+            ],
+            "defaultValue": "Yes" // let user provide an environment parameter
         }
     },
     "variables": {
@@ -15,17 +37,25 @@
     },
     "resources": [
         {
+            "condition": "[equals(parameters('environment'), 'prod')]", // this storage account will only be deployed if 'prod' is selected.
             "name": "[toLower(variables('storageName'))]", // lower case is moved here for visibility. name is the variable which is the prefix + parameter input
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
             "tags": {
-                "displayName": "picture library"
+                "displayName": "picture library",
+                "environment": "[parameters('environment')]" // use the parameter as a tag value
             },
             "location": "[variables('location')]", // uses location variable
             "kind": "StorageV2",
             "sku": {
                 "name": "Premium_LRS",
                 "tier": "Premium"
+            },
+            "properties": {
+                "networkAcls": {
+                    "defaultAction": "Deny",
+                    "bypass": "[if(equals(parameters('allowAzureServices'), 'Yes'), 'AzureServices', 'None')]" // 
+                }
             }
         }
     ],

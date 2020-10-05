@@ -17,7 +17,7 @@
                 "dev",
                 "prod"
             ],
-            "defaultValue": "development" // let user provide an environment parameter
+            "defaultValue": "dev" // let user provide an environment parameter
         }
     },
     "variables": {

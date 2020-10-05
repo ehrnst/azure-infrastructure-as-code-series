@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "storageAccountName": {
-            "value": "strpicturessummer2020" // TODO: Fill in parameter value
+            "value": "advtempldmo"
         }
     }
 }

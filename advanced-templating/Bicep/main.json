@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "demoBicep512"
+    },
+    "isProduction": {
+      "type": "bool"
+    }
+  },
+  "functions": [],
+  "variables": {
+    "storageName": "[format('str{0}', parameters('storageAccountName'))]",
+    "location": "[resourceGroup().location]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "name": "[toLower(variables('storageName'))]",
+      "location": "[variables('location')]",
+      "kind": "Storage",
+      "sku": {
+        "name": "[if(parameters('isProduction'), 'Standard_GRS', 'Standard_LRS')]"
+      }
+    }
+  ],
+  "outputs": {}
+}
