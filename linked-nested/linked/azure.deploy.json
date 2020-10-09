@@ -1,0 +1,100 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "provide a name for your storage account"
+            }
+        },
+        // number of str accounts. This could be an array if you would want to specify three different names or similar.
+        "numberOfStorageAccounts": {
+            "type": "int",
+            "metadata": {
+                "description": "number of storage accounts you want provisioned"
+            },
+            "defaultValue": 5
+        },
+        "environment": {
+           "type": "string",
+           "metadata": {
+                "description": "provide environment for the deployment"
+            },
+            "allowedValues": [
+                "dev",
+                "prod"
+            ],
+            "defaultValue": "dev" // let user provide an environment parameter
+        },
+        "allowAzureServices": {
+           "type": "string",
+           "metadata": {
+                "description": "provide environment for the deployment"
+            },
+            "allowedValues": [
+                "Yes",
+                "No"
+            ],
+            "defaultValue": "Yes" // let user provide an environment parameter
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]", // sets the same location as resource group
+        "storageName": "[toLower(concat('str',parameters('storageaccountname')))]", // here we are adding a prefix to the storage account name provided at input
+        "containerName": "images"
+    },
+    "resources": [
+        {
+            "condition": "[equals(parameters('environment'), 'prod')]", // this storage account will only be deployed if 'prod' is selected.
+            "name": "[concat(variables('storageName'), copyIndex())]", // We create a loop in the copy section. The resource name will here be reflected by the current iteration
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "tags": {
+                "displayName": "picture library",
+                "environment": "[parameters('environment')]" // use the parameter as a tag value
+            },
+            "location": "[variables('location')]", // uses location variable
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "properties": {
+                "networkAcls": {
+                    "defaultAction": "Deny",
+                    "bypass": "[if(equals(parameters('allowAzureServices'), 'Yes'), 'AzureServices', 'None')]" // 
+                }
+            },
+            "resources": 
+                [ // child resource
+                    {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2019-06-01",
+                    "name": "[concat('default/', variables('containerName'))]",
+                    "dependsOn": [
+                        "[concat(variables('storageName'),copyIndex())]"
+                    ]
+                    }
+                ],
+            // adding in a copy element
+            "copy": {
+                "name": "copy1", //name for the copy loop
+                "count": "[parameters('numberOfStorageAccounts')]" // taken value from input parameter
+            }
+        }
+    ],
+    "outputs": {
+        // using functions to return resourceId from each created storage account
+        // using concat and reference.
+        "storageAccounts": {
+            "type": "array",
+            "copy": {
+                "count": "[parameters('numberOfStorageAccounts')]",
+                "input": {
+                    "resourceId": "[reference(concat(variables('storageName'), copyIndex()), '2019-06-01', 'Full').resourceId]"
+                }
+            }
+        }
+    }
+}

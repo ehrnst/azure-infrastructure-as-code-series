@@ -1,0 +1,127 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
+        },
+        "resourceGroupName": {
+            "type": "string",
+            "metadata": {
+                "description": "description"
+            }
+        },
+        "numberOfStorageAccounts": {
+            "type": "int",
+            "metadata": {
+                "description": "description"
+            }
+        }
+    },
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('resourceGroupName')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2019-10-01",
+            "location": "[deployment().location]",
+            "dependsOn": [
+            ],
+            "tags": {
+            }
+        },
+        {
+            "name": "nestedStdAccounts",
+            "type": "Microsoft.Resources/deployments", // deployments are actually resources them self
+            "resourceGroup": "[parameters('resourceGroupName')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]" // i want to depend on the resource group above
+            ],
+            "apiVersion": "2019-10-01",
+            "properties": {
+                "expressionEvaluationOptions": {
+                    "scope": "inner" // weather you vant to check variables, references within the depl
+                },
+                "mode": "Incremental",
+                 // we reference parameters from the parent deployment
+                "parameters": {
+                    "storageAccountName": {
+                        "value": "[parameters('storageAccountName')]" // we reference parameters from the parent deployment
+                    },
+                    "numberOfStorageAccounts": {
+                        "value": "[parameters('numberOfStorageAccounts')]"
+                    }
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        // parameters here is provided by the parameter file. But as deployments are resources them self, we need to define them here as well
+                        "storageAccountName": {
+                            "type": "string",
+                            "metadata": {
+                                "description": "description"
+                            }
+                        },
+                        "numberOfStorageAccounts": {
+                            "type": "int",
+                            "metadata": {
+                                "description": "description"
+                            }
+                        }
+                    },
+                    "variables": {
+                        "storageName": "[toLower(concat('str',parameters('storageaccountname')))]" // here we are adding a prefix to the storage account name provided at input
+                    },
+                    "resources": [
+                        {
+                            "name": "[concat(variables('storageName'), copyIndex())]",
+                            "type": "Microsoft.Storage/storageAccounts",
+                            "apiVersion": "2019-06-01",
+                            "tags": {
+                                "displayName": "storageaccount1"
+                            },
+                            "location": "[resourceGroup().location]",
+                            "kind": "StorageV2",
+                            "sku": {
+                                "name": "Premium_LRS",
+                                "tier": "Premium"
+                            },
+                            "copy": {
+                                "name": "copy1", //name for the copy loop
+                                "count": "[parameters('numberOfStorageAccounts')]" // taken value from input parameter
+                            }
+                        }
+                    ],
+                    "outputs": {        
+                        "storageAccounts": {
+                        "type": "array",
+                        "copy": {
+                            "count": "[parameters('numberOfStorageAccounts')]",
+                            "input": {
+                                "resourceId": "[reference(concat(variables('storageName'), copyIndex()), '2019-06-01', 'Full').resourceId]"
+                            }
+                        }
+                    }
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+        // output from our nested template. References the deployment output above
+        "storageAccounts": {
+            "type": "array",
+            "value": "[reference('nestedStdAccounts').outputs.storageAccounts.value]"
+        },
+        // output from parent template
+        "resourceGroup": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+        }
+    }
+}
