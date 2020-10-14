@@ -1,23 +1,23 @@
 # download a few images from google images and add them to a our storage account
 [CmdletBinding()]
 param (
-    [Parameter(Mandatory=$true)]
+    [Parameter()]
     [string]
     $searchString,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter()]
     [string]
     $strAccountName,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter()]
     [string]
     $strContainerName,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter()]
     [string]
     $strAccountKey,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter()]
     [string]
     $resourceGroupName
 )
@@ -26,7 +26,6 @@ $ErrorActionPreference = 'Stop'
 
 # generate SAS token and upload to storage container
 $strContext = New-AzStorageContext -StorageAccountName $strAccountName -StorageAccountKey $strAccountKey
-$containerSasURI = New-AzStorageContainerSASToken -Context $strContext -ExpiryTime(get-date).AddHours((3)) -FullUri -Name $strContainerName -Permission rwdl
 
 $downloadFolder = $env:TEMP
 Write-Verbose "searching for images of $searchString"
@@ -37,13 +36,12 @@ foreach ($result in $googleImageSearch) {
     $guid = (new-guid).Guid
     $imgName = "${downloadFolder}\$guid.png"
     Invoke-WebRequest -Uri $result.src -OutFile $imgName -UseBasicParsing
-
-
-    $headers = @{
-        'x-ms-blob-type' = 'BlockBlob'
-        'x-ms-blob-content-disposition' = "attachment; filename=`"{0}`"" -f $imgName
-    }
     
-    # Upload File...
-    Invoke-RestMethod -Uri $containerSasURI -Method Put -Headers $headers -InFile $imgName
+    try {
+        write-verbose "Upload File..."
+        Set-AzStorageBlobContent -Container $strContainerName -File $imgName -Blob "$guid.png" -Context $strContext
+    }
+    catch {
+        break
+    }
 }
