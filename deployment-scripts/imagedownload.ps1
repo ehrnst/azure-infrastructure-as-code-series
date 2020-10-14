@@ -26,7 +26,7 @@ $ErrorActionPreference = 'Stop'
 
 # generate SAS token and upload to storage container
 $strContext = New-AzStorageContext -StorageAccountName $strAccountName -StorageAccountKey $strAccountKey
-$containerSasURI = New-AzStorageContainerSASToken -Context $strContext -ExpiryTime(get-date).AddSeconds(3600) -FullUri -Name $strContainerName -Permission rw
+$containerSasURI = New-AzStorageContainerSASToken -Context $strContext -ExpiryTime(get-date).AddHours((3)) -FullUri -Name $strContainerName -Permission rw
 
 $downloadFolder = $env:TEMP
 Write-Verbose "searching for images of $searchString"
@@ -44,6 +44,6 @@ foreach ($result in $googleImageSearch) {
         'x-ms-blob-content-disposition' = "attachment; filename=`"{0}`"" -f $imgName
     }
     
-    #Upload File...
+    # Upload File...
     Invoke-RestMethod -Uri $containerSasURI -Method Put -Headers $headers -InFile $imgName
 }
