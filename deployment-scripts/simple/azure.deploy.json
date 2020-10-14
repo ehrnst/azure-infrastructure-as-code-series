@@ -77,37 +77,42 @@
                 }
             ]
         },
-                {
-                        "type": "microsoft.Resources/deploymentScripts",
-                        "apiVersion": "2019-10-01-preview",
-                        "dependsOn": [
-                          "[variables('containerName')]"  
-                        ],
-                        "name": "imageDownloadScript",
-                        "location": "westeurope",
-                        "kind": "AzurePowerShell",
-                        "identity": {
-                            "type": "UserAssigned",
-                            "userAssignedIdentities": {
-                                "/subscriptions/6dca9329-fb22-46cb-826c-e26edc8a4840/resourceGroups/rg-managedIdentities/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mi-deploymentScripts": {}
-                            }
-                        }, // user managed identity with contributor access to the storage account
-                        "properties": {
-                            "forceUpdateTag": "[parameters('forceUpdateValue')]",
-                            "containerSettings": {
-                                "containerGroupName": "deploymentScripts"
-                            },
-                            "azPowerShellVersion": "3.0",  // or "azCliVersion": "2.0.80"
-                            "arguments": "-name \\\"John Dole\\\"",
-                            "environmentVariables": [
-                            ],
-                            "primaryScriptUri": "https://raw.githubusercontent.com/Azure/azure-docs-json-samples/master/deployment-script/deploymentscript-helloworld.ps1",
-                            "supportingScriptUris":[],
-                            "timeout": "PT30M",
-                            "cleanupPreference": "OnSuccess",
-                            "retentionInterval": "P1D"
-                        }
-                    }
+        {
+            "type": "microsoft.Resources/deploymentScripts",
+            "apiVersion": "2019-10-01-preview",
+            "dependsOn": [
+              "[variables('containerName')]"  
+            ],
+            "name": "deploymentScript",
+            "location": "westeurope",
+            "kind": "AzurePowerShell",
+            "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "/subscriptions/6dca9329-fb22-46cb-826c-e26edc8a4840/resourceGroups/rg-managedIdentities/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mi-deploymentScripts": {}
+                }
+            }, // user managed identity with contributor access to the storage account
+            "properties": {
+                "forceUpdateTag": "[parameters('forceUpdateValue')]",
+                "containerSettings": {
+                    "containerGroupName": "deploymentScripts"
+                },
+                "azPowerShellVersion": "3.0",  // or "azCliVersion": "2.0.80"
+                "arguments": "-name \\\"John Dole\\\"",
+                "environmentVariables": [
+                ],
+                "primaryScriptUri": "https://raw.githubusercontent.com/Azure/azure-docs-json-samples/master/deployment-script/deploymentscript-helloworld.ps1",
+                "supportingScriptUris":[],
+                "timeout": "PT30M",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+                }
+            }
     ],
-    "outputs": {}
+    "outputs": {
+        "scriptOutput": {
+            "type": "string",
+            "value": "[reference('deploymentScript').outputs.text]"
+        }
+    }
 }
