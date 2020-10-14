@@ -1,0 +1,113 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "provide a name for your storage account"
+            }
+        },
+        "environment": {
+           "type": "string",
+           "metadata": {
+                "description": "provide environment for the deployment"
+            },
+            "allowedValues": [
+                "dev",
+                "prod"
+            ],
+            "defaultValue": "prod" // let user provide an environment parameter
+        },
+        "allowAzureServices": {
+           "type": "string",
+           "metadata": {
+                "description": "provide environment for the deployment"
+            },
+            "allowedValues": [
+                "Yes",
+                "No"
+            ],
+            "defaultValue": "Yes" // let user provide an environment parameter
+        },
+        "forceUpdateValue": {
+            "type": "string",
+            "metadata": {
+                "description": "allows the script to run on evry execution. Set this to a fixed string to not rund script more than once"
+            },
+            "defaultValue": "[utcNow()]" // utcNow only allowed here...
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]", // sets the same location as resource group
+        "storageName": "[concat('str',parameters('storageaccountname'))]", // here we are adding a prefix to the storage account name provided at input
+        "containerName": "images"
+    },
+    "resources": [
+        {
+            "condition": "[equals(parameters('environment'), 'prod')]", // this storage account will only be deployed if 'prod' is selected.
+            "name": "[toLower(variables('storageName'))]", // lower case is moved here for visibility. name is the variable which is the prefix + parameter input
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "tags": {
+                "displayName": "picture library",
+                "environment": "[parameters('environment')]" // use the parameter as a tag value
+            },
+            "location": "[variables('location')]", // uses location variable
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "properties": {
+                "networkAcls": {
+                    "defaultAction": "Deny",
+                    "bypass": "[if(equals(parameters('allowAzureServices'), 'Yes'), 'AzureServices', 'None')]" // 
+                }
+            },
+            "resources": 
+            [ // child resource
+                {
+                "type": "blobServices/containers",
+                "apiVersion": "2019-06-01",
+                "name": "[concat('default/', variables('containerName'))]",
+                "dependsOn": [
+                    "[variables('storageName')]"
+                ]
+                }
+            ]
+        },
+                {
+                        "type": "microsoft.Resources/deploymentScripts",
+                        "apiVersion": "2019-10-01-preview",
+                        "dependsOn": [
+                          "[variables('containerName')]"  
+                        ],
+                        "name": "imageDownloadScript",
+                        "location": "westeurope",
+                        "kind": "AzurePowerShell",
+                        "identity": {
+                            "type": "UserAssigned",
+                            "userAssignedIdentities": {
+                                "/subscriptions/6dca9329-fb22-46cb-826c-e26edc8a4840/resourceGroups/rg-managedIdentities/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mi-deploymentScripts": {}
+                            }
+                        }, // user managed identity with contributor access to the storage account
+                        "properties": {
+                            "forceUpdateTag": "[parameters('forceUpdateValue')]",
+                            "containerSettings": {
+                                "containerGroupName": "deploymentScripts"
+                            },
+                            "azPowerShellVersion": "3.0",  // or "azCliVersion": "2.0.80"
+                            "arguments": "-name \\\"John Dole\\\"",
+                            "environmentVariables": [
+                            ],
+                            "primaryScriptUri": "https://raw.githubusercontent.com/Azure/azure-docs-json-samples/master/deployment-script/deploymentscript-helloworld.ps1",
+                            "supportingScriptUris":[],
+                            "timeout": "PT30M",
+                            "cleanupPreference": "OnSuccess",
+                            "retentionInterval": "P1D"
+                        }
+                    }
+    ],
+    "outputs": {}
+}
