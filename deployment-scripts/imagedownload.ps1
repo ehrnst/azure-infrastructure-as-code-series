@@ -1,11 +1,12 @@
 # download a few images from google images and add them to a our storage account
 [CmdletBinding()]
 param (
-    [Parameter()]
+    [Parameter(Mandatory=$true)]
     [string]
     $searchString
 )
 
+$ErrorActionPreference = 'Stop'
 
 $downloadFolder = $env:TEMP
 Write-Verbose "searching for images of $searchString"
