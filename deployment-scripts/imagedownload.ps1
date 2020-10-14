@@ -41,6 +41,7 @@ foreach ($result in $googleImageSearch) {
 
     $headers = @{
         'x-ms-blob-type' = 'BlockBlob'
+        'x-ms-blob-content-disposition' = "attachment; filename=`"{0}`"" -f $imgName
     }
     
     #Upload File...
