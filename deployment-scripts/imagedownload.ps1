@@ -39,7 +39,9 @@ foreach ($result in $googleImageSearch) {
     
     try {
         write-verbose "Upload File..."
-        Set-AzStorageBlobContent -Container $strContainerName -File $imgName -Blob "$guid.png" -Context $strContext
+        $blobProperties = @{"ContentType" = "image/png"};
+        Set-AzStorageBlobContent -Container $strContainerName -File $imgName -Blob "$guid.png" `
+        -Context $strContext -BlobType "Block" -Properties $blobProperties -Force
     }
     catch {
         break
