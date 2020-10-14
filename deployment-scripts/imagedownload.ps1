@@ -3,7 +3,23 @@
 param (
     [Parameter(Mandatory=$true)]
     [string]
-    $searchString
+    $searchString,
+
+    [Parameter(Mandatory=$true)]
+    [string]
+    $strAccountName,
+
+    [Parameter(Mandatory=$true)]
+    [string]
+    $strContainerName,
+
+    [Parameter(Mandatory=$true)]
+    [string]
+    $strAccountKey,
+
+    [Parameter(Mandatory=$true)]
+    [string]
+    $resourceGroupName
 )
 
 $ErrorActionPreference = 'Stop'
@@ -18,3 +34,9 @@ foreach ($result in $googleImageSearch) {
     $imgName = "${downloadFolder}\$guid.png"
     Invoke-WebRequest -Uri $result.src -OutFile $imgName -UseBasicParsing
 }
+
+# generate SAS token and upload to storage container
+$strContext = New-AzStorageContext -StorageAccountName $strAccountName -StorageAccountKey $strAccountKey
+$containerSasURI = New-AzStorageContainerSASToken -Context $strContext -ExpiryTime(get-date).AddSeconds(3600) -FullUri -Name $strContainerName -Permission rw
+
+azcopy copy $downloadFolder $containerSasURI –-recursive
