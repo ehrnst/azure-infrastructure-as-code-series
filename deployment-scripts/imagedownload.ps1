@@ -26,7 +26,7 @@ $ErrorActionPreference = 'Stop'
 
 # generate SAS token and upload to storage container
 $strContext = New-AzStorageContext -StorageAccountName $strAccountName -StorageAccountKey $strAccountKey
-$containerSasURI = New-AzStorageContainerSASToken -Context $strContext -ExpiryTime(get-date).AddHours((3)) -FullUri -Name $strContainerName -Permission rw
+$containerSasURI = New-AzStorageContainerSASToken -Context $strContext -ExpiryTime(get-date).AddHours((3)) -FullUri -Name $strContainerName -Permission rwdl
 
 $downloadFolder = $env:TEMP
 Write-Verbose "searching for images of $searchString"
