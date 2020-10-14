@@ -24,6 +24,10 @@ param (
 
 $ErrorActionPreference = 'Stop'
 
+# generate SAS token and upload to storage container
+$strContext = New-AzStorageContext -StorageAccountName $strAccountName -StorageAccountKey $strAccountKey
+$containerSasURI = New-AzStorageContainerSASToken -Context $strContext -ExpiryTime(get-date).AddSeconds(3600) -FullUri -Name $strContainerName -Permission rw
+
 $downloadFolder = $env:TEMP
 Write-Verbose "searching for images of $searchString"
 $googleImageSearch = (invoke-webrequest -Uri "https://www.google.com/search?q=$searchString&safe=active&source=lnms&tbm=isch").images `
@@ -33,10 +37,12 @@ foreach ($result in $googleImageSearch) {
     $guid = (new-guid).Guid
     $imgName = "${downloadFolder}\$guid.png"
     Invoke-WebRequest -Uri $result.src -OutFile $imgName -UseBasicParsing
+
+
+    $headers = @{
+        'x-ms-blob-type' = 'BlockBlob'
+    }
+    
+    #Upload File...
+    Invoke-RestMethod -Uri $containerSasURI -Method Put -Headers $headers -InFile $imgName
 }
-
-# generate SAS token and upload to storage container
-$strContext = New-AzStorageContext -StorageAccountName $strAccountName -StorageAccountKey $strAccountKey
-$containerSasURI = New-AzStorageContainerSASToken -Context $strContext -ExpiryTime(get-date).AddSeconds(3600) -FullUri -Name $strContainerName -Permission rw
-
-azcopy copy $downloadFolder $containerSasURI –-recursive
