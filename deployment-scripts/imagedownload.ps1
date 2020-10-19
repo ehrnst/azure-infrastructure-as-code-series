@@ -26,7 +26,7 @@ $ErrorActionPreference = 'Stop'
 
 # generate SAS token and upload to storage container
 $strContext = New-AzStorageContext -StorageAccountName $strAccountName -StorageAccountKey $strAccountKey
-
+$DeploymentScriptOutputs = @{}
 $downloadFolder = $env:TEMP
 Write-Verbose "searching for images of $searchString"
 $googleImageSearch = (invoke-webrequest -Uri "https://www.google.com/search?q=$searchString&safe=active&source=lnms&tbm=isch").images `
