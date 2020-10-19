@@ -118,7 +118,7 @@
     "outputs": {
         "scriptOutput": {
             "type": "string",
-            "value": "[reference('imageDownloader').outputs.text]"
+            "value": "[reference('imageDownloader').output.text]"
         }
     }
 }
