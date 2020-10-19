@@ -4,6 +4,7 @@
     "parameters": {
         "storageAccountName": {
             "type": "string",
+            "defaultValue": "[uniqueString( resourceGroup().id, deployment().name )]",
             "metadata": {
                 "description": "provide a name for your storage account"
             }
@@ -90,7 +91,7 @@
             ],
             "name": "imageDownloader",
             "location": "westeurope",
-            "kind": "AzurePowerShell",
+            "kind": "AzurePowerShell", // or AzureCLI
             "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
@@ -107,11 +108,12 @@
                 "arguments": "[format(' -searchString {0} -strAccountName {1} -strContainerName {2} -strAccountKey {3} -resourceGroupName {4}', parameters('imageSearchString'), variables('storageName'), variables('containerName'), listKeys(variables('storageName'), '2019-06-01').keys[0].value, resourceGroup().name)]",
                 "environmentVariables": [
                 ],
+                // using external script
                 "primaryScriptUri": "https://raw.githubusercontent.com/ehrnst/arm-templates/deploymentScripts/deployment-scripts/imagedownload.ps1",
                 "supportingScriptUris":[],
-                "timeout": "PT5M",
-                "cleanupPreference": "OnSuccess",
-                "retentionInterval": "P1D"
+                "timeout": "PT5M", // script execution time
+                "cleanupPreference": "OnSuccess", // when to clean resources. OnSuccess, Always, OnExperation
+                "retentionInterval": "P1D" // how long you want the script to retain. to delete script and resources at the same time. use 'OnExperation'
                 }
             }
     ],

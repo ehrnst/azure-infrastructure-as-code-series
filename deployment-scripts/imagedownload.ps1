@@ -3,7 +3,7 @@
 param (
     [Parameter()]
     [string]
-    $searchString,
+    $searchString = "martin ehrnst",
 
     [Parameter()]
     [string]
@@ -26,6 +26,8 @@ $ErrorActionPreference = 'Stop'
 
 # generate SAS token and upload to storage container
 $strContext = New-AzStorageContext -StorageAccountName $strAccountName -StorageAccountKey $strAccountKey
+# this variable is required to store outputs readable by ARM
+$DeploymentScriptOutputs = @{}
 
 $downloadFolder = $env:TEMP
 Write-Verbose "searching for images of $searchString"
@@ -47,3 +49,6 @@ foreach ($result in $googleImageSearch) {
         break
     }
 }
+
+$output = "uploaded $($googleImageSearch.count) pictures of $searchString"
+$DeploymentScriptOutputs['text'] = $output
