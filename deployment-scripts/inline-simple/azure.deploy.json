@@ -85,7 +85,7 @@
             ],
             "name": "deploymentScript",
             "location": "westeurope",
-            "kind": "AzurePowerShell",
+            "kind": "AzurePowerShell", // or AzureCli
             "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
@@ -98,21 +98,19 @@
                     "containerGroupName": "deploymentScripts"
                 },
                 "azPowerShellVersion": "3.0",  // or "azCliVersion": "2.0.80"
-                "arguments": "-name \\\"John Dole\\\"",
                 "environmentVariables": [
                 ],
-                "primaryScriptUri": "https://raw.githubusercontent.com/Azure/azure-docs-json-samples/master/deployment-script/deploymentscript-helloworld.ps1",
+                "scriptContent": "
+                    $output = 'Hello from Azure deployment script'
+                    Write-Output $output
+                ",
                 "supportingScriptUris":[],
-                "timeout": "PT30M", // how long will script run
-                "cleanupPreference": "OnSuccess",
-                "retentionInterval": "P1D"
+                "timeout": "PT5M", // script execution time
+                "cleanupPreference": "OnSuccess", // when to clean resources. OnSuccess, Always, OnExperation
+                "retentionInterval": "P1D" // how long you want the script to retain. to delete script and resources at the same time. use 'OnExperation'
                 }
             }
     ],
     "outputs": {
-        "scriptOutput": {
-            "type": "string",
-            "value": "[reference('deploymentScript').outputs.text]"
-        }
     }
 }
