@@ -103,7 +103,7 @@
                 ],
                 "primaryScriptUri": "https://raw.githubusercontent.com/Azure/azure-docs-json-samples/master/deployment-script/deploymentscript-helloworld.ps1",
                 "supportingScriptUris":[],
-                "timeout": "PT30M",
+                "timeout": "PT30M", // how long will script run
                 "cleanupPreference": "OnSuccess",
                 "retentionInterval": "P1D"
                 }

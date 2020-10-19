@@ -47,3 +47,6 @@ foreach ($result in $googleImageSearch) {
         break
     }
 }
+
+$output = $"uploaded $($imagesearch.count)"
+$DeploymentScriptOutputs['text'] = $output
