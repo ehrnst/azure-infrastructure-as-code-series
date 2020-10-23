@@ -4,6 +4,7 @@
     "parameters": {
         "storageAccountName": {
             "type": "string",
+            "defaultValue": "[uniqueString( resourceGroup().id, deployment().name )]",
             "metadata": {
                 "description": "provide a name for your storage account"
             }
