@@ -1,19 +1,54 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# This pipeline runs multiple stages
+# release stage uses a 'special' deployment job
+# this is a 'minumum template' to use in productuin
 
 trigger:
-- master
+- master # pipeline will run on new commits to specified branch
 
-pool:
-  vmImage: 'windows-latest'
+variables:
+  subscriptionConnectionName: 'My subscription connection'
+  subscriptionId: '6dca9329-fb22-46cb-826c-e26edc8a4840'
+  poolName: 'Windows-latest'
+  deploymeneLocation: 'Norway East'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+# normally build stages will build an application along with the infrastructure
+stages:
+  - stage: BUILD
+    jobs:
+    - job:
+      displayName: 'copy templates as artifacts'
+      steps:
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Pipeline.Workspace)'
+            artifact: 'resourceTemplates'
+            publishLocation: 'pipeline'
+            
+ # production scenarios often require a more complex test. In this case we verify the arm tempate 
+  - stage: TEST
+    jobs:
+    - job:
+      displayName: 'Verify ARM template'
+      steps:
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Subscription'
+            azureResourceManagerConnection: $(subscriptionConnectionName)  #defined in variable
+            subscriptionId: $(subscriptionId) #defined in variable
+            location: $(deploymentLocation) #defined in variable
+            templateLocation: 'Linked artifact'
+            csmFile: '\'
+            deploymentMode: 'Validation'
+  
+  - stage: RELEASE
+    dependsOn: TEST
+    jobs:
+      - deployment: deploy Azure resources
+        pool:
+          name: 
+        environment: string
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - script: echo Hi!
