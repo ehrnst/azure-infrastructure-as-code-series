@@ -44,6 +44,7 @@ stages:
     dependsOn: TEST
     jobs:
       - deployment: 'deployResources'
+        displayName: 'Deploy azure resources'
         environment: 'arm-livestreams'
         strategy:
           runOnce:
