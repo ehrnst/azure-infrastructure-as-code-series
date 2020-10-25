@@ -43,7 +43,7 @@ stages:
   - stage: RELEASE
     dependsOn: TEST
     jobs:
-      - deployment: 'deploy Azure resources'
+      - deployment: 'deployResources'
         environment: 'arm-livestreams'
         strategy:
           runOnce:
