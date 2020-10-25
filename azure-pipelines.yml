@@ -46,7 +46,7 @@ stages:
       - deployment: deploy Azure resources
         pool:
           name: $(poolName)
-        environment: 'arm-livestreams'
+        environment: 'arm livestreams'
         strategy:
           runOnce:
             deploy:
