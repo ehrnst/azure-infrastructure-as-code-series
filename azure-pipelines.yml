@@ -43,10 +43,8 @@ stages:
   - stage: RELEASE
     dependsOn: TEST
     jobs:
-      - deployment: deploy Azure resources
-        pool:
-          name: $(poolName)
-        environment: 'arm livestreams'
+      - deployment: 'deploy Azure resources'
+        environment: 'arm-livestreams'
         strategy:
           runOnce:
             deploy:
