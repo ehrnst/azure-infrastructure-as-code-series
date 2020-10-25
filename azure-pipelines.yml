@@ -23,7 +23,7 @@ stages:
             targetPath: '$(Pipeline.Workspace)'
             artifact: 'resourceTemplates'
             publishLocation: 'pipeline'
-            
+
  # production scenarios often require a more complex test. In this case we verify the arm tempate 
   - stage: TEST
     jobs:
@@ -45,8 +45,8 @@ stages:
     jobs:
       - deployment: deploy Azure resources
         pool:
-          name: 
-        environment: string
+          name: $(poolName)
+        environment: 'arm-livestreams'
         strategy:
           runOnce:
             deploy:
