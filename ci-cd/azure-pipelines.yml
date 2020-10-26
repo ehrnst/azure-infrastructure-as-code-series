@@ -1,3 +1,5 @@
+# Azure DevOps pipeline example
+#
 # This pipeline runs multiple stages
 # release stage uses a 'special' deployment job
 # consider this approach as a 'minumum template' to use in productuin
@@ -6,7 +8,7 @@ trigger:
 - master # pipeline will run on new commits to specified branch
 
 variables:
-  subscriptionConnectionName: 'My subscription connection'
+  subscriptionConnectionName: 'My subscription connection' # this is the name of the service connection in Azure DevOps
   subscriptionId: $(secretSubscriptionId)
   poolName: 'Windows-latest'
 
