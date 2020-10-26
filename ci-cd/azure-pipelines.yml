@@ -57,6 +57,12 @@ stages:
           runOnce:
             deploy:
               steps:
+                - task: PowerShell@2
+                  inputs:
+                    targetType: 'inline'
+                    script: |
+                      cd $(Pipeline.Workspace)/resourceTemplates
+                      dir
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
                     deploymentScope: 'Subscription'
