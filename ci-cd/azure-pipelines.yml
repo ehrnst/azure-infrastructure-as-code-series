@@ -1,13 +1,13 @@
 # This pipeline runs multiple stages
 # release stage uses a 'special' deployment job
-# this is a 'minumum template' to use in productuin
+# consider this approach as a 'minumum template' to use in productuin
 
 trigger:
 - master # pipeline will run on new commits to specified branch
 
 variables:
   subscriptionConnectionName: 'My subscription connection'
-  subscriptionId: '6dca9329-fb22-46cb-826c-e26edc8a4840'
+  subscriptionId: $(secretSubscriptionId)
   poolName: 'Windows-latest'
 
 pool:
@@ -56,12 +56,6 @@ stages:
           runOnce:
             deploy:
               steps:
-                - task: PowerShell@2
-                  inputs:
-                    targetType: 'inline'
-                    script: |
-                      cd $(Pipeline.Workspace)/resourceTemplates
-                      dir
                 - task: AzureResourceManagerTemplateDeployment@3
                   inputs:
                     deploymentScope: 'Subscription'
@@ -72,4 +66,4 @@ stages:
                     csmFile: '$(Pipeline.Workspace)/resourceTemplates/s/linked-nested/nested/azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
                     csmParametersFile: '$(Pipeline.Workspace)/resourceTemplates/s/ci-cd/azure.deploy.parameters.json' # parameter file path/uri
                     deploymentMode: 'Incremental'
-                    deploymentName: 'cicd$(Build.BuildNumber)'
+                    deploymentName: 'cicd$(Build.BuildNumber)' # adding a pipeline build number to the deployment name. this will increment on every run.
