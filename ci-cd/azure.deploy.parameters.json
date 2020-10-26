@@ -1,0 +1,16 @@
+// created a new file to use in cicd deployment
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "value": "cicddemo"
+        },
+        "resourceGroupName": {
+            "value": "rg-cicd-demo"
+        },
+        "numberOfStorageAccounts": {
+            "value": 5
+        }
+    }
+}

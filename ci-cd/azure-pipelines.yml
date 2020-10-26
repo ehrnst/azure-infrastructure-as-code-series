@@ -40,8 +40,8 @@ stages:
             subscriptionId: $(subscriptionId) #defined in variable
             location: $(deploymeneLocation) #defined in variable
             templateLocation: 'Linked artifact'
-            csmFile: '$(Build.SourcesDirectory)\linked-nested\nested\azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
-            csmParametersFile: '$(Build.SourcesDirectory)\linked-nested\nested\azure.deploy.parameters.json'
+            csmFile: '$(Build.SourcesDirectory)/linked-nested/nested/azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
+            csmParametersFile: '$(Build.SourcesDirectory)/linked-nested/nested/azure.deploy.parameters.json'
             deploymentMode: 'Validation'
             deploymentName: 'Validatingtemplate'
   
@@ -62,7 +62,7 @@ stages:
                     subscriptionId: $(subscriptionId) #defined in variable
                     location: $(deploymentLocation) #defined in variable
                     templateLocation: 'Linked artifact'
-                    csmFile: '$(Pipeline.Workspace)\resourceTemplates\linked-nested\nested\azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
-                    csmParametersFile: '$(Pipeline.Workspace)\resourceTemplates\linked-nested\nested\azure.deploy.parameters.json'
+                    csmFile: '$(Pipeline.Workspace)/resourceTemplates/linked-nested/nested/azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
+                    csmParametersFile: '$(Pipeline.Workspace)/resourceTemplates/ci-cd/azure.deploy.parameters.json'
                     deploymentMode: 'Incremental'
                     deploymentName: 'cicd$(Build.BuildNumber)'
