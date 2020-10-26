@@ -9,7 +9,6 @@ variables:
   subscriptionConnectionName: 'My subscription connection'
   subscriptionId: '6dca9329-fb22-46cb-826c-e26edc8a4840'
   poolName: 'Windows-latest'
-  deploymeneLocation: 'NorwayEast'
 
 pool:
   vmImage: $(poolName)
@@ -38,7 +37,7 @@ stages:
             deploymentScope: 'Subscription'
             azureResourceManagerConnection: $(subscriptionConnectionName)  #defined in variable
             subscriptionId: $(subscriptionId) #defined in variable
-            location: $(deploymeneLocation) #defined in variable
+            location: 'NorwayEast'
             templateLocation: 'Linked artifact'
             csmFile: '$(Build.SourcesDirectory)/linked-nested/nested/azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
             csmParametersFile: '$(Build.SourcesDirectory)/linked-nested/nested/azure.deploy.parameters.json'
@@ -68,7 +67,7 @@ stages:
                     deploymentScope: 'Subscription'
                     azureResourceManagerConnection: $(subscriptionConnectionName)  #defined in variable
                     subscriptionId: $(subscriptionId) #defined in variable
-                    location: $(deploymentLocation) #defined in variable
+                    location: 'NorwayEast'
                     templateLocation: 'Linked artifact'
                     csmFile: '$(Pipeline.Workspace)/resourceTemplates/s/linked-nested/nested/azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
                     csmParametersFile: '$(Pipeline.Workspace)/resourceTemplates/s/ci-cd/azure.deploy.parameters.json' # parameter file path/uri
