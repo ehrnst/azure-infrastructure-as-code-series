@@ -51,6 +51,8 @@ stages:
       - deployment: 'deployResources'
         displayName: 'Deploy azure resources'
         environment: 'arm-livestreams'
+        pool:
+         vmImage: $(poolName)
         strategy:
           runOnce:
             deploy:
