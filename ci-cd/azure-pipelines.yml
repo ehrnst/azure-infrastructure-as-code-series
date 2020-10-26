@@ -11,6 +11,9 @@ variables:
   poolName: 'Windows-latest'
   deploymeneLocation: 'Norway East'
 
+pool:
+  vmImage: $(poolName)
+
 # normally build stages will build an application along with the infrastructure
 stages:
   - stage: BUILD
