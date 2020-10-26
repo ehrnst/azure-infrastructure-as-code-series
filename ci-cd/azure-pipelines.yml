@@ -37,7 +37,7 @@ stages:
             subscriptionId: $(subscriptionId) #defined in variable
             location: $(deploymentLocation) #defined in variable
             templateLocation: 'Linked artifact'
-            csmFile: '\'
+            csmFile: '$(Build.SourcesDirectory)\linked-nested\nested\azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
             deploymentMode: 'Validation'
   
   - stage: RELEASE
