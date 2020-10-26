@@ -9,7 +9,7 @@ variables:
   subscriptionConnectionName: 'My subscription connection'
   subscriptionId: '6dca9329-fb22-46cb-826c-e26edc8a4840'
   poolName: 'Windows-latest'
-  deploymeneLocation: 'Norway East'
+  deploymeneLocation: 'NorwayEast'
 
 pool:
   vmImage: $(poolName)
@@ -41,10 +41,12 @@ stages:
             location: $(deploymentLocation) #defined in variable
             templateLocation: 'Linked artifact'
             csmFile: '$(Build.SourcesDirectory)\linked-nested\nested\azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
+            csmParametersFile: '$(Build.SourcesDirectory)\linked-nested\nested\azure.deploy.parameters.json'
             deploymentMode: 'Validation'
+            deploymentName: 'Validatingtemplate'
   
   - stage: RELEASE
-    dependsOn: TEST
+    dependsOn: TEST # stage will not run if test fails
     jobs:
       - deployment: 'deployResources'
         displayName: 'Deploy azure resources'
@@ -53,4 +55,14 @@ stages:
           runOnce:
             deploy:
               steps:
-              - script: echo Hi!
+                - task: AzureResourceManagerTemplateDeployment@3
+                  inputs:
+                    deploymentScope: 'Subscription'
+                    azureResourceManagerConnection: $(subscriptionConnectionName)  #defined in variable
+                    subscriptionId: $(subscriptionId) #defined in variable
+                    location: $(deploymentLocation) #defined in variable
+                    templateLocation: 'Linked artifact'
+                    csmFile: '$(Build.SourcesDirectory)\linked-nested\nested\azure.deploy.json' # path to the file you wan to deploy. could be url using csmFileLink
+                    csmParametersFile: '$(Build.SourcesDirectory)\linked-nested\nested\azure.deploy.parameters.json'
+                    deploymentMode: 'Incremental'
+                    deploymentName: 'cicd$(Build.BuildNumber)'
