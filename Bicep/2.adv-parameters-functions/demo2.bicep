@@ -35,4 +35,9 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+  name: '${storage.name}/default/mycontainer'
+}
+
+
 output strAccountId string = storage.id

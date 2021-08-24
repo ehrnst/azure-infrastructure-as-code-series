@@ -30,7 +30,7 @@ storage.id // reference the storage account ID within Bicep, using the deploymen
 
 During deployment Bicep will compile an ARM template from your file. This is because under the hood, JSON based ARM templates is what Azure Resource Manager understand. Bicep abstract this for you, but you can however build ARM templates from your Bicep files, and even the other way around, decompiling an ARM template into Bicep.
 
-> You do not have to manually compile Bicep files before deploying. We provided this just for reference.
+> You do not have to manually compile Bicep files before deploying. We provided this just for reference. Use the code below, or right click on your bicep file
 
 ```PowerShell
 # Build arm template from Bicep
