@@ -31,7 +31,6 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
     name: storageSettings[environment].sku // navigate our object variable and grab the sku based on input environment.
   }
   properties: {
-    
   }
 }
 
