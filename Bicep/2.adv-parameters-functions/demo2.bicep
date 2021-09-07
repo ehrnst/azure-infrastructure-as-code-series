@@ -1,6 +1,5 @@
 // using functions
-// This example show how we can take environment as an input parameter and use this in combination of an object variable.
-// here we set the storage sku based on production or test environment
+// This example show how we can take environment as an input parameter and use this in combination with a ternary operator
 // also added is an output, using the 'friendly name' as a reference
 
 @minLength(4)
@@ -13,25 +12,16 @@ param storageAccountName string
 ])
 param environment string
 
-var storageSettings = {
-  prod: {
-    sku: 'Premium_LRS'
-  }
-  test: {
-    sku: 'Standard_LRS'
-  }
-}
-
+var storageSku = environment == 'prod' ? 'Premium_LRS' : 'Standard_LRS' // if environment is prod use premium. If not use standard
 
 resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: toLower(storageAccountName) // force lowercase letters
   location: resourceGroup().location // use the same location for storage account as the resource group
   kind:'StorageV2'
   sku: {
-    name: storageSettings[environment].sku // navigate our object variable and grab the sku based on input environment.
+    name: storageSku
   }
   properties: {
-    
   }
 }
 
