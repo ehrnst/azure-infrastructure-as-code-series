@@ -38,10 +38,6 @@ var environmentConfig = {
 }
 
 
-resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
-  name: 'test'
-}
-
 // get existing subnets
 resource sqlSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
   name: '${environmentConfig[env].vnet}/${environmentConfig[env].subnets.sqlsubnet}'
@@ -54,7 +50,7 @@ resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' existing = if (res
   scope: resourceGroup(resourceSub, resourceRG)
 }
 
-resource sqltoVCEnetBlue 'Microsoft.Sql/servers/virtualNetworkRules@2021-02-01-preview' = if (resourceType == 'sql') {
+resource sqlTovnet 'Microsoft.Sql/servers/virtualNetworkRules@2021-02-01-preview' = if (resourceType == 'sql') {
   name: '${sqlServer.name}/${env}-connection'
   properties: {
     virtualNetworkSubnetId: sqlSubnet.id

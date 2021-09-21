@@ -1,4 +1,4 @@
-// deploy a SQL server with Vipps specification.
+// deploy a SQL server with additional features
 // you will need to provide a group/user and corresponding login name and principal ID to be set as SQL administrator
 
 @description('Provide a server name or run with default. (unique)')
@@ -31,13 +31,13 @@ param databaseName string
 @description('SQL Admin. AD group or user. Default is user')
 param dbAdType string = 'User'
 
-@description('Provide the DB login name. user.name@vipps.no, groupName@vipps.no')
+@description('Provide the DB login name. user.name@company.no, groupName@company.no')
 param dbAdLoginName string
 
 @description('Provide the object ID of the group or user which is SQL administrator')
 param dbAdId string
 
-@description('If you want to connect from VCE to your SQL. This will configure your SQL server to use service endpoint and allow connection from VCE only. Default is false')
+@description('If you want to connect to the existing vnet set true. Default is false')
 param connectToVnet bool = false
 
 param tags object
@@ -174,7 +174,7 @@ resource vulnerabilityAssessment 'Microsoft.Sql/servers/vulnerabilityAssessments
 }
 
 
-module vceSubnets 'existing-vnet.bicep' = if (connectToVnet) {
+module existingSubnets 'existing-vnet.bicep' = if (connectToVnet) {
   name: 'connect-Subnet'
   params: {
     env: env
