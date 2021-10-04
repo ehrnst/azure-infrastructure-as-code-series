@@ -26,6 +26,5 @@ jobs:
       continue-on-error: true
       with:
         scope: subscription
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         template: ./Bicep/4.CI-CD/main.bicep
         failOnStdErr: false
