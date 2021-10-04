@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - main
-      
+
 name: CI-CD Bicep Demo
 jobs:
   build-and-deploy:
@@ -19,7 +19,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }} # set as secret JSON object in repo
 
       # Deploy Bicep file
-    - name: deploy
+    - name: deploy bicep file
       uses: azure/arm-deploy@v1
       with:
         scope: subscription
