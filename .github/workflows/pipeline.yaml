@@ -16,8 +16,9 @@ jobs:
       # Deploy Bicep file
     - name: deploy
       uses: azure/arm-deploy@v1
+      working-directory: ./bicep/4.CI-CD
       with:
         scope: subscription
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        template: ./bicep/4.ci-cd/main.bicep
+        template: main.bicep
         failOnStdErr: false
