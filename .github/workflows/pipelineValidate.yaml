@@ -13,7 +13,6 @@ jobs:
       # validate bicep code
     - uses: azure/CLI@v1
       name: validate bicep files
-      working-directory: 
       with:
         inlineScript: |
           az bicep build --file $GITHUB_WORKSPACE/Bicep/4.CI-CD/main.bicep
