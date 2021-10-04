@@ -13,9 +13,10 @@ jobs:
       # validate bicep code
     - uses: azure/CLI@v1
       name: validate bicep files
+      working-directory: 
       with:
         inlineScript: |
-          az bicep build --file .\Bicep\4.CI-CD\main.bicep
+          az bicep build --file $GITHUB_WORKSPACE/Bicep/4.CI-CD/main.bicep
 
     - uses: azure/login@v1
       name: 'Logging in to Azure'
@@ -31,3 +32,4 @@ jobs:
         template: ./Bicep/4.CI-CD/main.bicep
         parameters: env=prod databaseName=cicd serverLogin=${{ secrets.BICEPDEMO_DBLOGIN_NAME }} serverLoginId=${{ secrets.BICEPDEMO_DBLOGIN_ID }}
         failOnStdErr: false
+        showRawStdOut: true
