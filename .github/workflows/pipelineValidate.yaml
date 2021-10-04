@@ -15,7 +15,7 @@ jobs:
       name: validate bicep files
       with:
         inlineScript: |
-          az bicep build .\Bicep\4.CI-CD\main.bicep
+          az bicep build --file .\Bicep\4.CI-CD\main.bicep
 
     - uses: azure/login@v1
       name: 'Logging in to Azure'
