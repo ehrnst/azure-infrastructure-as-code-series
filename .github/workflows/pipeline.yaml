@@ -1,4 +1,8 @@
-on: [push]
+on: 
+  push:
+    branches:
+      - main
+
 name: CI-CD Bicep Demo
 jobs:
   build-and-deploy:
@@ -10,13 +14,16 @@ jobs:
 
       # Log into Azure
     - uses: azure/login@v1
+      name: 'Logging in to Azure'
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }} # set as secret JSON object in repo
 
       # Deploy Bicep file
-    - name: deploy
+    - name: deploy bicep file
       uses: azure/arm-deploy@v1
       with:
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        template: ./4.ci-cd/main.bicep
+        scope: subscription
+        region: westeurope # we need to set this on subscription scoped deployments
+        template: ./Bicep/4.CI-CD/main.bicep
+        parameters: env=prod databaseName=cicd serverLogin=${{ secrets.BICEPDEMO_DBLOGIN_NAME }} serverLoginId=${{ secrets.BICEPDEMO_DBLOGIN_ID }}
         failOnStdErr: false
