@@ -22,8 +22,8 @@ jobs:
         region: westeurope # we need to set this on subscription scoped deployments
         template: ./Bicep/4.CI-CD/main.bicep
         parameters:
-          env: prod
-          databaseName: cicd
-          serverLogin: ${{ secrets.BICEPDEMO_DBLOGIN_NAME }} # set as secret in repo
-          serverLoginId: ${{ secrets.BICEPDEMO_DBLOGIN_ID }} # set as secret in repo
+          env=prod
+          databaseName=cicd
+          serverLogin=${{ secrets.BICEPDEMO_DBLOGIN_NAME }} # set as secret in repo
+          serverLoginId=${{ secrets.BICEPDEMO_DBLOGIN_ID }} # set as secret in repo
         failOnStdErr: false
