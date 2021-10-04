@@ -18,6 +18,5 @@ jobs:
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./4.ci-cd/main.bicep
         failOnStdErr: false
