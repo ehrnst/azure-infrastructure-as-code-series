@@ -23,8 +23,8 @@ jobs:
       # Deploy Bicep file
     - name: deploy
       uses: azure/arm-deploy@v1
-      continue-on-error: true
       with:
         scope: subscription
+        region: westeurope
         template: ./Bicep/4.CI-CD/main.bicep
         failOnStdErr: false
