@@ -3,7 +3,8 @@ on: [workflow_dispatch]
 
 name: CI-CD Bicep Demo linter
 jobs:
-  verify:
+  verifyDeploy:
+    name: verify bicep code
     runs-on: ubuntu-latest
     steps:
 
@@ -18,7 +19,9 @@ jobs:
           az bicep build --file $GITHUB_WORKSPACE/Bicep/4.CI-CD/main.bicep
   
   deploy:
+    name: deploy infra
     runs-on: ubuntu-latest
+    needs: [verifyDeploy] # depend on verify job
     steps:
       
       # Checkout code
