@@ -3,7 +3,8 @@ on: [workflow_dispatch]
 
 name: CI-CD Bicep Demo linter
 jobs:
-  build-and-deploy:
+  verifyDeploy:
+    name: verify bicep code
     runs-on: ubuntu-latest
     steps:
 
@@ -12,11 +13,22 @@ jobs:
 
       # validate bicep code
     - uses: azure/CLI@v1
-      name: validate bicep files
+      name: validate bicep files using linter spec
       with:
         inlineScript: |
-          bicep build .\Bicep\4.CI-CD\main.bicep
+          az bicep build --file $GITHUB_WORKSPACE/Bicep/4.CI-CD/main.bicep
+  
+  deploy:
+    name: deploy infra
+    runs-on: ubuntu-latest
+    needs: [verifyDeploy] # depend on verify job
+    steps:
+      
+      # Checkout code
+    - uses: actions/checkout@main
 
+      
+      # azure login
     - uses: azure/login@v1
       name: 'Logging in to Azure'
       with:
