@@ -20,11 +20,12 @@ jobs:
           #!/bin/bash
           az group list
 
-    #   # Deploy Bicep file
-    # - name: deploy
-    #   uses: azure/arm-deploy@v1
-    #   with:
-    #     scope: subscription
-    #     subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-    #     template: ./Bicep/4.CI-CD/main.bicep
-    #     failOnStdErr: false
+      # Deploy Bicep file
+    - name: deploy
+      uses: azure/arm-deploy@v1
+      continue-on-error: true
+      with:
+        scope: subscription
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        template: ./Bicep/4.CI-CD/main.bicep
+        failOnStdErr: false
