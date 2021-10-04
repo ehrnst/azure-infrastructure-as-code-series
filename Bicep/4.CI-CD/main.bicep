@@ -8,6 +8,7 @@ param databaseName string
 param serverLogin string
 param serverLoginId string
 param deployDate string = utcNow('yyyy-MM-dd') //used for tag only
+param name string
 
 var tags = {
   'owner': 'Marcel Zehner'
