@@ -1,5 +1,9 @@
+# set workflow to run on pr and push to main
 on: 
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
