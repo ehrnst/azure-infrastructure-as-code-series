@@ -1,0 +1,11 @@
+# Welcome to the code repository for our Azure infrastructure as code series 💪💻
+
+In this repository you will find the code examples used in our webcasts. During the Covid-19 pandemic we have covered infrastructure as code on Azure using [ARM Templates](https://www.youtube.com/playlist?list=PLMe6dpu8mADJ1OV4usugfLK6yXY6hClQ5) and [Azure Bicep](https://www.youtube.com/watch?v=3wGMGId77OQ&list=PLMe6dpu8mADIrThzFA-WQwncXQ9BOzGVO)
+
+Hopefully you will be able to follow all the code examples after wathcing the videos. If anything, feel free to reach out;
+
+[Marcel Zehner](https://marcelzehner.ch) Microsoft MVP and regional director 
+[🐦](https://twitter.com/marcelzehner) 
+
+[Martin Ehrnst](https://adatum.no) Microsoft Azure MVP
+[🐦](https://twitter.com/ehrnst)
