@@ -1,7 +1,7 @@
-# set workflow to manual trigger
+# set workflow to manual
 on: workflow_dispatch
 
-name: CI-CD Bicep Demo
+name: CI-CD Bicep Demo linter
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -9,6 +9,13 @@ jobs:
 
       # Checkout code
     - uses: actions/checkout@main
+
+      # validate bicep code
+    - uses: azure/CLI@v1
+      name: validate bicep files
+      with:
+        inlineScript: |
+        bicep build .\Bicep\4.CI-CD\main.bicep
 
       # Log into Azure
     - uses: azure/login@v1
