@@ -19,5 +19,5 @@ jobs:
       with:
         scope: subscription
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        template: main.bicep
+        template: Bicep/4.CI-CD/main.bicep
         failOnStdErr: false
