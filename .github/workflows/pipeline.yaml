@@ -1,4 +1,8 @@
-on: [push]
+on: 
+  push:
+    branches:
+      - main
+      
 name: CI-CD Bicep Demo
 jobs:
   build-and-deploy:
