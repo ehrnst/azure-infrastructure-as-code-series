@@ -10,21 +10,20 @@ jobs:
 
       # Log into Azure
     - uses: azure/login@v1
+      name: 'Logging in to Azure'
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: script
-      uses: Azure/CLI@v1
-      with:
-        inlineScript: |
-          #!/bin/bash
-          az group list
+        creds: ${{ secrets.AZURE_CREDENTIALS }} # set as secret JSON object in repo
 
       # Deploy Bicep file
     - name: deploy
       uses: azure/arm-deploy@v1
       with:
         scope: subscription
-        region: westeurope
+        region: westeurope # we need to set this on subscription scoped deployments
         template: ./Bicep/4.CI-CD/main.bicep
+        parameters:
+          env: prod
+          databaseName: cicd
+          serverLogin: ${{ secrets.BICEPDEMO_DBLOGIN_NAME }} # set as secret in repo
+          serverLoginId: ${{ secrets.BICEPDEMO_DBLOGIN_ID }} # set as secret in repo
         failOnStdErr: false

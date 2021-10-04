@@ -3,17 +3,17 @@
 
 targetScope = 'subscription'
 
-// param env string
-// param databaseName string
-// param serverLogin string
-// param serverLoginId string
-// param deployDate string = utcNow('yyyy-MM-dd') //used for tag only
+param env string
+param databaseName string
+param serverLogin string
+param serverLoginId string
+param deployDate string = utcNow('yyyy-MM-dd') //used for tag only
 
 var tags = {
   'owner': 'Marcel Zehner'
   'purpose': 'Bicep demo'
-  // 'deploydate': deployDate
-  // 'environment': env
+  'deploydate': deployDate
+  'environment': env
 }
 
 var location = deployment().location // using deployment location
@@ -23,16 +23,16 @@ resource sqlRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-// module sql '../3.modules/sql.bicep' = {
-//   scope: sqlRg
-//   name: 'bicep-module-demo-sql'
-//   params: {
-//     databaseName: databaseName
-//     dbAdId: serverLoginId
-//     dbAdLoginName: serverLogin
-//     connectToVnet: true // not mandatory for the module
-//     capacity: 6 // not mandatory for the module
-//     env: env
-//     tags: tags
-//   }
-// }
+module sql '../3.modules/sql.bicep' = {
+  scope: sqlRg
+  name: 'bicep-module-demo-sql'
+  params: {
+    databaseName: databaseName
+    dbAdId: serverLoginId
+    dbAdLoginName: serverLogin
+    connectToVnet: true // not mandatory for the module
+    capacity: 6 // not mandatory for the module
+    env: env
+    tags: tags
+  }
+}
