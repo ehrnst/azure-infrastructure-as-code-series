@@ -23,7 +23,7 @@ resource sqlRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-module sql '../3.modules/sql.bicep' = {
+module sql './bicep/3.modules/sql.bicep' = {
   scope: sqlRg
   name: 'bicep-module-demo-sql'
   params: {
