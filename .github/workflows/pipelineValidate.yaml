@@ -43,4 +43,3 @@ jobs:
         template: ./Bicep/4.CI-CD/main.bicep
         parameters: env=prod databaseName=cicd serverLogin=${{ secrets.BICEPDEMO_DBLOGIN_NAME }} serverLoginId=${{ secrets.BICEPDEMO_DBLOGIN_ID }}
         failOnStdErr: false
-        showRawStdOut: true
