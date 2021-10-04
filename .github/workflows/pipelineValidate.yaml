@@ -17,7 +17,6 @@ jobs:
         inlineScript: |
         bicep build .\Bicep\4.CI-CD\main.bicep
 
-      # Log into Azure
     - uses: azure/login@v1
       name: 'Logging in to Azure'
       with:
