@@ -1,5 +1,5 @@
 # set workflow to manual
-on: workflow_dispatch
+on: [workflow_dispatch]
 
 name: CI-CD Bicep Demo linter
 jobs:

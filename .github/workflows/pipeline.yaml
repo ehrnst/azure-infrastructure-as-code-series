@@ -1,5 +1,5 @@
 # set workflow to manual trigger
-on: workflow_dispatch
+on: [workflow_dispatch]
 
 name: CI-CD Bicep Demo
 jobs:
