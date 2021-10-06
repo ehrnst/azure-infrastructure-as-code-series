@@ -8,7 +8,7 @@
             "level": "warning"
           },
           "no-unused-params" : {
-              "level": "off" // set to error to test
+              "level": "error" // set to error to test
           },
           "no-unused-vars" : {
               "level": "error"
