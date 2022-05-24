@@ -1,12 +1,12 @@
 // this module deploy a simple vnet and two subnets
 // its on purpose left out of the main file
 
-param vnetName string
 @allowed([
   'test'
   'prod'
 ])
 param env string
+param vnetName string = 'my-${env}-net'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   name: vnetName
@@ -14,14 +14,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.0.0.0/16'
+        '10.0.0.0/24'
       ]
     }
     subnets: [
       {
         name: 'sql-${env}-net'
         properties: {
-          addressPrefix: '10.0.0.0/28'
+          addressPrefix: '10.0.0.128/26'
           serviceEndpoints: [
             {
               service: 'Microsoft.SQL'
@@ -32,7 +32,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
       {
         name: 'storage-${env}-net'
         properties: {
-          addressPrefix: '10.0.1.0/28'
+          addressPrefix: '10.0.0.192/26'
           serviceEndpoints: [
             {
               service: 'Microsoft.Storage'
