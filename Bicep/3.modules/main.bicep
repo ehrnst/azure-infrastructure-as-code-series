@@ -11,8 +11,8 @@ param serverLoginId string
 param deployDate string = utcNow('yyyy-MM-dd') //used for tag only
 
 var tags = {
-  'owner': 'Marcel Zehner'
-  'purpose': 'Bicep demo'
+  'owner': 'Martin Ehrnst'
+  'purpose': 'NIC Bicep demo'
   'deploydate': deployDate
   'environment': env
 }

@@ -108,6 +108,9 @@ resource sqlAudit 'Microsoft.Sql/servers/auditingSettings@2021-02-01-preview' = 
     storageAccountSubscriptionId: subscription().subscriptionId
     isStorageSecondaryKeyInUse: false
   }
+  dependsOn: [
+    rbac
+  ]
 }
 
 
@@ -188,7 +191,7 @@ module existingSubnets 'existing-vnet.bicep' = if (connectToVnet) {
 }
 
 resource sqlvnetRule 'Microsoft.Sql/servers/virtualNetworkRules@2021-02-01-preview' = if (connectToVnet) {
-  name: '${sqlServer.name}/sql-${env}-net'
+  name: '${sqlServer.name}/${env}-connection'
   properties: {
     virtualNetworkSubnetId: existingSubnets.outputs.subnets.sql
     ignoreMissingVnetServiceEndpoint: true
