@@ -11,6 +11,9 @@ param sqlServerName string = 'sql-${uniqueString(resourceGroup().id)}'
 @description('What environment are you deploying')
 param env string
 
+@description('The location of SQL server. Default to same as resource group')
+param resourceLocation string = resourceGroup().location
+
 @allowed([
   'generalPurpose'
   'businessCritical'
@@ -59,7 +62,7 @@ var storageName = replace('str${sqlServerName}', '-', '')
 // storage account for defender and audits.
 resource sqlStorageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: take(toLower(storageName), 24)
-  location: resourceGroup().location
+  location: resourceLocation
   kind: 'StorageV2'
   properties: {
     allowBlobPublicAccess: false
@@ -77,7 +80,7 @@ resource sqlStorageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
 
 resource sqlServer 'Microsoft.Sql/servers@2020-11-01-preview' = {
   name: sqlServerName
-  location: resourceGroup().location
+  location: resourceLocation
   identity: {
     type: 'SystemAssigned'
   }
@@ -111,7 +114,7 @@ resource sqlAudit 'Microsoft.Sql/servers/auditingSettings@2021-02-01-preview' = 
 resource sqlDb 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
   name: databaseName
   parent: sqlServer
-  location: resourceGroup().location
+  location: resourceLocation
   properties: {
     zoneRedundant: databaseType == 'hyperScale' ? false : true // hyperscale eq no zone redundancy
   }

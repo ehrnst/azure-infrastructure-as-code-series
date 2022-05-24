@@ -5,6 +5,7 @@ targetScope = 'subscription'
 
 param env string
 param databaseName string
+param resourceLocation string = deployment().location // using deployment location
 param serverLogin string
 param serverLoginId string
 param deployDate string = utcNow('yyyy-MM-dd') //used for tag only
@@ -16,11 +17,9 @@ var tags = {
   'environment': env
 }
 
-var location = deployment().location // using deployment location
-
 resource sqlRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: 'rg-bicep-cicd'
-  location: location
+  location: resourceLocation
 }
 
 module sql '../3.modules/sql.bicep' = {

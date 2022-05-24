@@ -4,6 +4,7 @@
 targetScope = 'subscription'
 
 param env string
+param resourceLocation string = deployment().location // using deployment location
 param databaseName string
 param serverLogin string
 param serverLoginId string
@@ -16,11 +17,9 @@ var tags = {
   'environment': env
 }
 
-var location = deployment().location // using deployment location
-
 resource sqlRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: 'rg-bicep-demo3'
-  location: location
+  location: resourceLocation
 }
 
 module sql 'sql.bicep' = {
@@ -30,6 +29,7 @@ module sql 'sql.bicep' = {
     databaseName: databaseName
     dbAdId: serverLoginId
     dbAdLoginName: serverLogin
+    resourceLocation: resourceLocation
     connectToVnet: true // not mandatory for the module
     capacity: 6 // not mandatory for the module
     env: env
