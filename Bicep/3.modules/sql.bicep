@@ -178,12 +178,16 @@ module existingSubnets 'existing-vnet.bicep' = if (connectToVnet) {
   name: 'connect-Subnet'
   params: {
     env: env
-    resourceType: 'sql'
-    resourceName: sqlServer.name
-    resourceSub: subscription().id
-    resourceRG: resourceGroup().name
   }
   dependsOn: [
     sqlServer
   ]
+}
+
+resource sqlvnetRule 'Microsoft.Sql/servers/virtualNetworkRules@2021-02-01-preview' = if (connectToVnet) {
+  name: '${sqlServer.name}/sql-${env}-net'
+  properties: {
+    virtualNetworkSubnetId: existingSubnets.outputs.subnets.sql
+    ignoreMissingVnetServiceEndpoint: true
+  }
 }
