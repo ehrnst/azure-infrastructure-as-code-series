@@ -3,7 +3,7 @@
 
 param storageAccountName string
 
-resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storageAccountName // use whats inputted
   location: 'westeurope'
   kind:'StorageV2'
@@ -15,6 +15,6 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-09-01' = {
   name: '${storage.name}/default/mycontainer' //implicit dependency
 }

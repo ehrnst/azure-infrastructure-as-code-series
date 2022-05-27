@@ -33,5 +33,6 @@ module sql '../3.modules/sql.bicep' = {
     capacity: 6 // not mandatory for the module
     env: env
     tags: tags
+    resourceLocation: resourceLocation
   }
 }

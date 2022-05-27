@@ -36,7 +36,7 @@ var storageSettings = {
 var storageAccountName = take('str${uniqueString(resourceGroup().id)}', 24) // generate a unique name with 'str' as a prefix. And only take max 24 characters
 
 
-resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storageAccountName
   location: resourceLocation 
   kind:'StorageV2'
@@ -50,7 +50,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
 }
 
 // add a loop to deploy multiple containers to our storage account
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = [for containerName in storageSettings[environment].containers: {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-09-01' = [for containerName in storageSettings[environment].containers: {
   name: '${storage.name}/default/${containerName}'
 }]
 

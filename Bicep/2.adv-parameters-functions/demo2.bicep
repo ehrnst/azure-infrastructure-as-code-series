@@ -16,7 +16,7 @@ param environment string
 
 var storageSku = environment == 'prod' ? 'Premium_LRS' : 'Standard_LRS' // if environment is prod use premium. If not use standard
 
-resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: toLower(storageAccountName) // force lowercase letters
   location: resourceLocation
   kind:'StorageV2'
@@ -27,7 +27,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-09-01' = {
   name: '${storage.name}/default/mycontainer'
 }
 

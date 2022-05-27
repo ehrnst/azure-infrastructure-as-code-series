@@ -28,7 +28,7 @@ var environmentConfig = {
 
 
 // get existing subnets
-resource sqlSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
+resource sqlSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-08-01' existing = {
   name: '${environmentConfig[env].vnet}/${environmentConfig[env].subnets.sqlsubnet}'
   scope: resourceGroup(environmentConfig[env].vnetSubscription, environmentConfig[env].vnetResourceGroup)
 }
