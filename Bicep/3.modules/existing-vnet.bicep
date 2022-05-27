@@ -11,17 +11,17 @@ var environmentConfig = {
   test: {
     vnetSubscription: '6dca9329-fb22-46cb-826c-e26edc8a4840' // test subscription
     vnetResourceGroup: 'rg-bicep-demo-vnet'
-    vnet: 'my-${env}-vnet'
+    vnet: 'my-${env}-net'
     subnets: {
-      sqlsubnet: 'sql-${env}-net'
+      sqlsubnet: 'sql-${env}-snet'
     }
   }
   prod: {
     vnetSubscription: '6dca9329-fb22-46cb-826c-e26edc8a4840' // prod subscription
     vnetResourceGroup: 'rg-bicep-demo-vnet'
-    vnet: 'my-${env}-vnet'
+    vnet: 'my-${env}-net'
     subnets: {
-      sqlsubnet: 'sql-${env}-net'
+      sqlsubnet: 'sql-${env}-snet'
     }
   }
 }

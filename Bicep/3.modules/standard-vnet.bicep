@@ -19,7 +19,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
     }
     subnets: [
       {
-        name: 'sql-${env}-net'
+        name: 'sql-${env}-snet'
         properties: {
           addressPrefix: '10.0.0.128/26'
           serviceEndpoints: [
@@ -30,7 +30,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         }
       }
       {
-        name: 'storage-${env}-net'
+        name: 'storage-${env}-snet'
         properties: {
           addressPrefix: '10.0.0.192/26'
           serviceEndpoints: [

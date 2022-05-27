@@ -15,12 +15,13 @@ param env string
 param resourceLocation string = resourceGroup().location
 
 @allowed([
+  'serverless'
   'generalPurpose'
   'businessCritical'
   'hyperScale'
 ])
 @description('What DB type are you deploying. Default is generalPurpose')
-param databaseType string = 'generalPurpose'
+param databaseType string = 'serverless'
 
 @description('Db capacity. Default is 2')
 param capacity int = 2
@@ -54,6 +55,9 @@ var dbSkus = {
   }
   Hyperscale: {
     name: 'HS_Gen5_${capacity}'
+  }
+  serverless: {
+    name: 'GP_S_Gen5_${capacity}'
   }
 }
 
@@ -120,6 +124,7 @@ resource sqlDb 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
   location: resourceLocation
   properties: {
     zoneRedundant: databaseType == 'hyperScale' ? false : true // hyperscale eq no zone redundancy
+    autoPauseDelay: env == 'prod' && databaseType == 'serverless' ? -1 : 60 // disable auto pause for serverless sku in production environments
   }
   sku: {
     name: dbSkus[databaseType].name
