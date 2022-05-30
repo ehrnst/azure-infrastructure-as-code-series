@@ -90,3 +90,13 @@ Az Bicep decompile --file azure.deploy.json
 
 
 > All Bicep files provided in this repository is intended for learing purposes only. Pleas do not consider anything you find production ready
+
+## Learning 🎓
+
+Apart from this repository including our [YouTube series on Azure Bicep](https://www.youtube.com/watch?v=3wGMGId77OQ&list=PLMe6dpu8mADIrThzFA-WQwncXQ9BOzGVO) (obviously) tehre are many good resources to learn. Here are a few.
+
+- [Bicep learning path from Microsoft](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/learn-bicep?WT.mc_id=AZ-MVP-5003437)
+- [Freek Berson's Bicep book](https://www.amazon.com/Getting-started-Bicep-Infrastructure-Azure/dp/B098WK3MR7)
+
+> Learning the theoreticals is always good. But nothing beats practice. Make sure your next Azure deployment uses Bicep.
+
