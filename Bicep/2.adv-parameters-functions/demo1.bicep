@@ -4,11 +4,12 @@
 @minLength(4)
 @maxLength(24)
 param storageAccountName string
+param resourceLocation string = 'westeurope'
 
 
-resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: toLower(storageAccountName) // force lowercase letters
-  location: 'westeurope'
+  location: resourceLocation
   kind:'StorageV2'
   sku: {
     name: 'Premium_LRS'
@@ -18,6 +19,6 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-09-01' = {
   name: '${storage.name}/default/mycontainer'
 }

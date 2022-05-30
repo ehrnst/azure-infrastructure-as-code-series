@@ -11,13 +11,17 @@ param sqlServerName string = 'sql-${uniqueString(resourceGroup().id)}'
 @description('What environment are you deploying')
 param env string
 
+@description('The location of SQL server. Default to same as resource group')
+param resourceLocation string = resourceGroup().location
+
 @allowed([
+  'serverless'
   'generalPurpose'
   'businessCritical'
   'hyperScale'
 ])
 @description('What DB type are you deploying. Default is generalPurpose')
-param databaseType string = 'generalPurpose'
+param databaseType string = 'serverless'
 
 @description('Db capacity. Default is 2')
 param capacity int = 2
@@ -52,14 +56,17 @@ var dbSkus = {
   Hyperscale: {
     name: 'HS_Gen5_${capacity}'
   }
+  serverless: {
+    name: 'GP_S_Gen5_${capacity}'
+  }
 }
 
 var storageName = replace('str${sqlServerName}', '-', '')
 
 // storage account for defender and audits.
-resource sqlStorageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource sqlStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: take(toLower(storageName), 24)
-  location: resourceGroup().location
+  location: resourceLocation
   kind: 'StorageV2'
   properties: {
     allowBlobPublicAccess: false
@@ -75,9 +82,9 @@ resource sqlStorageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   tags: tags
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2020-11-01-preview' = {
+resource sqlServer 'Microsoft.Sql/servers@2021-11-01-preview' = {
   name: sqlServerName
-  location: resourceGroup().location
+  location: resourceLocation
   identity: {
     type: 'SystemAssigned'
   }
@@ -96,7 +103,7 @@ resource sqlServer 'Microsoft.Sql/servers@2020-11-01-preview' = {
   tags: tags
 }
 
-resource sqlAudit 'Microsoft.Sql/servers/auditingSettings@2021-02-01-preview' = if (env == 'prod') {
+resource sqlAudit 'Microsoft.Sql/servers/auditingSettings@2021-11-01-preview' = if (env == 'prod') {
   name: '${sqlServer.name}/default'
   properties: {
     state: 'Enabled'
@@ -105,15 +112,19 @@ resource sqlAudit 'Microsoft.Sql/servers/auditingSettings@2021-02-01-preview' = 
     storageAccountSubscriptionId: subscription().subscriptionId
     isStorageSecondaryKeyInUse: false
   }
+  dependsOn: [
+    rbac
+  ]
 }
 
 
-resource sqlDb 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
+resource sqlDb 'Microsoft.Sql/servers/databases@2021-11-01-preview' = {
   name: databaseName
   parent: sqlServer
-  location: resourceGroup().location
+  location: resourceLocation
   properties: {
     zoneRedundant: databaseType == 'hyperScale' ? false : true // hyperscale eq no zone redundancy
+    autoPauseDelay: env == 'prod' && databaseType == 'serverless' ? -1 : 60 // disable auto pause for serverless sku in production environments
   }
   sku: {
     name: dbSkus[databaseType].name
@@ -121,7 +132,7 @@ resource sqlDb 'Microsoft.Sql/servers/databases@2021-02-01-preview' = {
   tags: tags
 }
 
-resource dblongTermBackup 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2021-02-01-preview' = if (databaseType != 'hyperScale' && env == 'prod') {
+resource dblongTermBackup 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2021-11-01-preview' = if (databaseType != 'hyperScale' && env == 'prod') {
   name: 'default'
   parent: sqlDb
   properties: {
@@ -132,7 +143,7 @@ resource dblongTermBackup 'Microsoft.Sql/servers/databases/backupLongTermRetenti
   }
 }
 
-resource dbShortTermBackup 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2021-02-01-preview' = {
+resource dbShortTermBackup 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2021-11-01-preview' = {
   name: 'default'
   parent: sqlDb
   properties: {
@@ -141,7 +152,7 @@ resource dbShortTermBackup 'Microsoft.Sql/servers/databases/backupShortTermReten
 }
 
 // allow SQL server access to storage account
-resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+resource rbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
   name: guid(sqlServer.name, resourceGroup().id, sqlStorageAccount.id)
   scope: sqlStorageAccount
   properties: {
@@ -151,7 +162,7 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
   }
 }
 
-resource advancedSecurity 'Microsoft.Sql/servers/securityAlertPolicies@2021-02-01-preview' = {
+resource advancedSecurity 'Microsoft.Sql/servers/securityAlertPolicies@2021-11-01-preview' = {
   name: '${sqlServer.name}/Default'
   properties: {
     state: 'Enabled'
@@ -159,7 +170,7 @@ resource advancedSecurity 'Microsoft.Sql/servers/securityAlertPolicies@2021-02-0
 }
 
 // azure defender for SQL
-resource vulnerabilityAssessment 'Microsoft.Sql/servers/vulnerabilityAssessments@2021-02-01-preview' = {
+resource vulnerabilityAssessment 'Microsoft.Sql/servers/vulnerabilityAssessments@2021-11-01-preview' = {
   name: 'default'
   parent: sqlServer
   properties: {
@@ -178,12 +189,16 @@ module existingSubnets 'existing-vnet.bicep' = if (connectToVnet) {
   name: 'connect-Subnet'
   params: {
     env: env
-    resourceType: 'sql'
-    resourceName: sqlServer.name
-    resourceSub: subscription().id
-    resourceRG: resourceGroup().name
   }
   dependsOn: [
     sqlServer
   ]
+}
+
+resource sqlvnetRule 'Microsoft.Sql/servers/virtualNetworkRules@2021-11-01-preview' = if (connectToVnet) {
+  name: '${sqlServer.name}/${env}-connection'
+  properties: {
+    virtualNetworkSubnetId: existingSubnets.outputs.subnets.sql
+    ignoreMissingVnetServiceEndpoint: true
+  }
 }

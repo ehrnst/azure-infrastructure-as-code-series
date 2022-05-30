@@ -15,7 +15,9 @@ In both languages, Bicep and the JSON based ARM templates we covered the followi
 Hopefully you will be able to follow all the code examples after wathcing the videos. If anything, feel free to reach out;
 
 [Marcel Zehner](https://marcelzehner.ch) Microsoft MVP and regional director 
-[🐦](https://twitter.com/marcelzehner) 
+[🐦 Twitter](https://twitter.com/marcelzehner) 
+[👔 LinkedIn](https://www.linkedin.com/in/marcelzehner/)
 
 [Martin Ehrnst](https://adatum.no) Microsoft Azure MVP
-[🐦](https://twitter.com/ehrnst)
+[🐦 Twitter](https://twitter.com/ehrnst)
+[👔 LinkedIn](https://www.linkedin.com/in/martinehrnst/)

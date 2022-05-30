@@ -39,7 +39,7 @@ jobs:
       uses: azure/arm-deploy@v1
       with:
         scope: subscription
-        region: westeurope # we need to set this on subscription scoped deployments
+        region: eastus # we need to set this on subscription scoped deployments
         template: ./Bicep/4.CI-CD/main.bicep
         parameters: env=prod databaseName=cicd serverLogin=${{ secrets.BICEPDEMO_DBLOGIN_NAME }} serverLoginId=${{ secrets.BICEPDEMO_DBLOGIN_ID }}
         failOnStdErr: false

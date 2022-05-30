@@ -7,56 +7,33 @@
 ])
 param env string
 
-@allowed([
-  'sql'
-])
-param resourceType string
-
-param resourceName string
-
-param resourceSub string
-
-param resourceRG string
-
 var environmentConfig = {
   test: {
     vnetSubscription: '6dca9329-fb22-46cb-826c-e26edc8a4840' // test subscription
     vnetResourceGroup: 'rg-bicep-demo-vnet'
-    vnet: 'my-${env}-vnet'
+    vnet: 'my-${env}-net'
     subnets: {
-      sqlsubnet: 'sql-${env}-net'
+      sqlsubnet: 'sql-${env}-snet'
     }
   }
   prod: {
     vnetSubscription: '6dca9329-fb22-46cb-826c-e26edc8a4840' // prod subscription
     vnetResourceGroup: 'rg-bicep-demo-vnet'
-    vnet: 'my-${env}-vnet'
+    vnet: 'my-${env}-net'
     subnets: {
-      sqlsubnet: 'sql-${env}-net'
+      sqlsubnet: 'sql-${env}-snet'
     }
   }
 }
 
 
 // get existing subnets
-resource sqlSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-02-01' existing = {
+resource sqlSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-08-01' existing = {
   name: '${environmentConfig[env].vnet}/${environmentConfig[env].subnets.sqlsubnet}'
   scope: resourceGroup(environmentConfig[env].vnetSubscription, environmentConfig[env].vnetResourceGroup)
 }
 
-// this one is deployed by the SQL module
-resource sqlServer 'Microsoft.Sql/servers@2021-02-01-preview' existing = if (resourceType == 'sql') {
-  name: resourceName
-  scope: resourceGroup(resourceSub, resourceRG)
-}
-
-resource sqlTovnet 'Microsoft.Sql/servers/virtualNetworkRules@2021-02-01-preview' = if (resourceType == 'sql') {
-  name: '${sqlServer.name}/${env}-connection'
-  properties: {
-    virtualNetworkSubnetId: sqlSubnet.id
-    ignoreMissingVnetServiceEndpoint: true
-  }
-  dependsOn: [
-    sqlServer
-  ]
+// output the vnet id to use in another module
+output subnets object = {
+  sql: sqlSubnet.id
 }

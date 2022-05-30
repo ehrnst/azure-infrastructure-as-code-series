@@ -4,12 +4,15 @@
 // Also we removed the storage name and create it 'on the fly' to make sure we create a unique name based on our resource group
 // containers is now created based on the storageSettings variable. We use a for-each loop to add the containers to our storage account.
 
-
+@description('Specify wheather this is a prod or test deployment')
 @allowed([
   'prod'
   'test'
 ])
 param environment string
+
+@description('specify location where to deploy')
+param resourceLocation string = resourceGroup().location // use the same location for storage account as the resource group as default
 
 var storageSettings = {
   prod: {
@@ -30,24 +33,24 @@ var storageSettings = {
   }
 }
 
-var storageAccountName = 'str${uniqueString(resourceGroup().id)}' // generate a unique name with 'str' as a prefix.
+var storageAccountName = take('str${uniqueString(resourceGroup().id)}', 24) // generate a unique name with 'str' as a prefix. And only take max 24 characters
 
 
-resource storage 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   name: storageAccountName
-  location: resourceGroup().location // use the same location for storage account as the resource group
+  location: resourceLocation 
   kind:'StorageV2'
   sku: {
     name: storageSettings[environment].sku // navigate our object variable and grab the sku based on input environment.
   }
   properties: {
-    allowBlobPublicAccess: storageSettings[environment].publicAccess
+    allowBlobPublicAccess: storageSettings[environment].publicAccess // set public access based on the environment
     supportsHttpsTrafficOnly: true
   }
 }
 
 // add a loop to deploy multiple containers to our storage account
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = [for containerName in storageSettings[environment].containers: {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-09-01' = [for containerName in storageSettings[environment].containers: {
   name: '${storage.name}/default/${containerName}'
 }]
 
