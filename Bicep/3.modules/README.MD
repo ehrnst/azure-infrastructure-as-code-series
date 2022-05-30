@@ -1,7 +1,8 @@
+![alt](https://docs.microsoft.com/en-us/learn/achievements/bicep/create-composable-bicep-files-using-modules.svg)
 # Using Bicep modules
 
 In this demo we use modules to create more portable code. Modules also help us split complexity in to different files keeping the `main` files tidyer, but also the module files it self.
-In this case, our `main.bicp` is set to deploy at the `subscription` level using `deploymentScope`. We can therfore deploy both resource groups and individiual resources.
+In this case, our `main.bicep` is set to deploy at the `subscription` level using `deploymentScope`. We can therfore deploy both resource groups and individiual resources.
 
 Further the `main` file calls a SQL module. This module is responsible for creating a SQL server and a database.
 Using the techniques we learned in our earlier demos we can configure the SQL server based on what is inputted. Things like server type `generalPurpose`, or `hyperScale`, auditing, and Azure defender is handled based on input. We also configure backup for the SQL Databases.

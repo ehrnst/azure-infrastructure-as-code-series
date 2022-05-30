@@ -1,3 +1,5 @@
+![alt](https://docs.microsoft.com/en-us/learn/achievements/bicep/deploy-azure-resources-by-using-bicep-templates.svg)
+
 # Intro. Comparing ARM  templates and Bicep
 
 Comparing the two templates. ARM and Bicep. You can see it greatly reduce the number of characters you need to write. Bicep abstract most of the complexity we know from ARM templates without sacrificing any functionality.
@@ -67,6 +69,9 @@ The two examples below show how to reference the full resource id of a storage a
 ```Bicep
 storage.id // reference the storage account ID within Bicep, using the deployment symbolic name
 ```
+
+To see the difference live visit the [Bicep Playground](https://bicepdemo.z22.web.core.windows.net/)
+
 ## Compile and decompile
 
 During deployment Bicep will compile an ARM template from your file. This is because under the hood, JSON based ARM templates is what Azure Resource Manager understand. Bicep abstract this for you, but you can however build ARM templates from your Bicep files, and even the other way around, decompiling an ARM template into Bicep.

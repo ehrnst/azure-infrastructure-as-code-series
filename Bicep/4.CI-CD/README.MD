@@ -1,3 +1,4 @@
+![github Actions azure bicep](https://docs.microsoft.com/en-us/learn/achievements/bicep/bicep-github-actions.svg)  
 # Deploy Azure Bicep with GitHub Actions
 
 In this part we show how to deploy Azure bicep files using GH actions. At the `root` of the directory, you will find twi `.yaml` files functioning as workflows in GitHub. 

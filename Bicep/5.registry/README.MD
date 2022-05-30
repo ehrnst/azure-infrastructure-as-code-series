@@ -1,3 +1,4 @@
+![alt](https://docs.microsoft.com/en-us/learn/achievements/bicep/share-bicep-modules-using-private-registries.svg)
 # Sharing bicep files using azure container registry (ACR)
 
 With the release of Bicep CLI `0.4.1008` we where able to create a private registry for our modules.  
