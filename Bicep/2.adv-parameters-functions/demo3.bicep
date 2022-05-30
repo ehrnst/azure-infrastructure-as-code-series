@@ -44,7 +44,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
     name: storageSettings[environment].sku // navigate our object variable and grab the sku based on input environment.
   }
   properties: {
-    allowBlobPublicAccess: storageSettings[environment].publicAccess
+    allowBlobPublicAccess: storageSettings[environment].publicAccess // set public access based on the environment
     supportsHttpsTrafficOnly: true
   }
 }
