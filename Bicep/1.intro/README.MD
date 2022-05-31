@@ -72,6 +72,26 @@ storage.id // reference the storage account ID within Bicep, using the deploymen
 
 To see the difference live visit the [Bicep Playground](https://bicepdemo.z22.web.core.windows.net/)
 
+## Deploy
+
+We typically use Azure CLI or PowerShell to deploy Bicep templates
+
+```PowerShell
+
+New-AzResourceGroupDeployment -ResourceGroupName "my-rg" -TemplateFile template.bicep
+
+NewAzSubscriptionDeployment -location "westeurope" -TemplateFile template.bicep
+
+```
+
+```CLI
+
+az deployment group create --resource-group "my-rg" --template-file template.bicep
+
+az deployment sub create --location "westeurope" --template-file template.bicep
+
+```
+
 ## Compile and decompile
 
 During deployment Bicep will compile an ARM template from your file. This is because under the hood, JSON based ARM templates is what Azure Resource Manager understand. Bicep abstract this for you, but you can however build ARM templates from your Bicep files, and even the other way around, decompiling an ARM template into Bicep.
