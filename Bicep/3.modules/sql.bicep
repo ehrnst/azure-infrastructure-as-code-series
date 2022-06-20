@@ -42,7 +42,7 @@ param dbAdLoginName string
 param dbAdId string
 
 @description('If you want to connect to the existing vnet set true. Default is false')
-param connectToVnet bool = false
+param connectToVnet bool = true
 
 param tags object
 

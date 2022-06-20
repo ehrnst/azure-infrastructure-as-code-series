@@ -30,7 +30,7 @@ module sql 'sql.bicep' = {
     dbAdId: serverLoginId
     dbAdLoginName: serverLogin
     resourceLocation: resourceLocation
-    connectToVnet: true // not mandatory for the module
+    connectToVnet: false // not mandatory for the module
     capacity: 6 // not mandatory for the module
     env: env
     tags: tags
