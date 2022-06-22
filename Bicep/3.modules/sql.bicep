@@ -186,7 +186,7 @@ resource vulnerabilityAssessment 'Microsoft.Sql/servers/vulnerabilityAssessments
 
 
 module existingSubnets 'existing-vnet.bicep' = if (connectToVnet) {
-  name: 'connect-Subnet'
+  name: 'connect-Subnet-${uniqueString(sqlServerName)}'
   params: {
     env: env
   }

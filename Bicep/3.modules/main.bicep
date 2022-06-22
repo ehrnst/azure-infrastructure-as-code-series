@@ -24,7 +24,7 @@ resource sqlRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module sql 'sql.bicep' = {
   scope: sqlRg
-  name: 'bicep-module-demo-sql'
+  name: 'sql-deploy-${uniqueString(sqlRg.name)}'
   params: {
     databaseName: databaseName
     dbAdId: serverLoginId
