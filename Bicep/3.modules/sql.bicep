@@ -186,7 +186,7 @@ resource vulnerabilityAssessment 'Microsoft.Sql/servers/vulnerabilityAssessments
 
 
 module existingSubnets 'existing-vnet.bicep' = if (connectToVnet) {
-  name: 'connect-Subnet-${uniqueString(sqlServerName)}'
+  name: 'connect-Subnet-${sqlServerName}'
   params: {
     env: env
   }
@@ -198,7 +198,7 @@ module existingSubnets 'existing-vnet.bicep' = if (connectToVnet) {
 resource sqlvnetRule 'Microsoft.Sql/servers/virtualNetworkRules@2021-11-01-preview' = if (connectToVnet) {
   name: '${sqlServer.name}/${env}-connection'
   properties: {
-    virtualNetworkSubnetId: existingSubnets.outputs.subnets.sql
+    virtualNetworkSubnetId: connectToVnet ? existingSubnets.outputs.subnets.sql : '' // gh issue #2371
     ignoreMissingVnetServiceEndpoint: true
   }
 }
