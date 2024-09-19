@@ -1,7 +1,7 @@
 # Import module
 Install-Module -Name 'PSDocs.Azure' -Repository PSGallery -force;
 
-$moduleDirectory = ".\modules"
+$moduleDirectory = ".\Bicep\3.modules"
 
 $modules = Get-ChildItem -Path $moduleDirectory -Include *.bicep -Recurse
 

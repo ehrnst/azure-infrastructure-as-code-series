@@ -15,7 +15,7 @@ function ConvertTo-MarkDownTable {
     }
 }
 
-$modules = Get-ChildItem .\modules -Include *.bicep -Recurse
+$modules = Get-ChildItem .\Bicep\3.modules -Include *.bicep -Recurse
 $moduleTable = @()
 
 foreach ($module in $modules) {
@@ -29,7 +29,7 @@ foreach ($module in $modules) {
         "`u{1F4AA} Name" = "$moduleName"
         "`u{1F4CE} URL" = "br:$($registry.Registry)/$($registry.ImageName):version"
         "`u{1F516} Latest version" = $latestTag
-        "`u{1F4D6} Readme" = "/docs/modules/$($moduleName).md"
+        "`u{1F4D6} Readme" = "[link](/docs/modules/$($moduleName).md)"
         "`u{1F453} Source" = "/modules/$moduleDirectory"
     }
 
@@ -40,5 +40,5 @@ $newTable = $moduleTable | ConvertTo-MarkDownTable
 # get current module table
 [regex]$pattern = '(?s)(?<=<!--- Table --->\r?\n).*?(?=\r?\n<!--- End Table --->)'
 
-$content = Get-Content .\docs\index.md -Raw
-[Regex]::Replace($content, $pattern, $newTable) | Set-Content .\docs\index.md -NoNewline -Force
+$content = Get-Content .\Bicep\5.registry\module-index.md -Raw
+[Regex]::Replace($content, $pattern, $newTable) | Set-Content .\Bicep\5.registry\module-index.md -NoNewline -Force
