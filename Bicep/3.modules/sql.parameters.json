@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "env": {
+      "value": "test"
+    },
+    "databaseName": {
+      "value": "customerdb"
+    },
+    "dbAdLoginName": {
+      "value": "martin@ehrnst.no"
+    },
+    "dbAdId": {
+      "value": "d948f643-0531-477a-9b4b-168022b6635c"
+    },
+    "tags": {
+      "value": {
+        "environment": "dev",
+        "owner": "martin"}
+    }
+  }
+}
