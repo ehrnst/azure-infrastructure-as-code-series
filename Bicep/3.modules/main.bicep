@@ -17,14 +17,13 @@ var tags = {
   'environment': env
 }
 
-resource sqlRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource sqlRg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: 'rg-bicep-demo3'
   location: resourceLocation
 }
 
 module sql 'sql.bicep' = {
   scope: sqlRg
-  name: 'sql-deploy-${uniqueString(sqlRg.name)}'
   params: {
     databaseName: databaseName
     dbAdId: serverLoginId

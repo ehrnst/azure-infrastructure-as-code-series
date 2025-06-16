@@ -26,13 +26,13 @@ var environmentConfig = {
   }
 }
 
-resource VNET 'Microsoft.Network/virtualNetworks@2021-08-01' existing = {
+resource VNET 'Microsoft.Network/virtualNetworks@2024-07-01' existing = {
   name: environmentConfig[env].vnet
   scope: resourceGroup(environmentConfig[env].vnetSubscription, environmentConfig[env].vnetResourceGroup)
 }
 
 // get existing subnets
-resource sqlSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-08-01' existing = {
+resource sqlSubnet 'Microsoft.Network/virtualNetworks/subnets@2024-07-01' existing = {
   name: environmentConfig[env].subnets.sqlsubnet
   parent: VNET
 }

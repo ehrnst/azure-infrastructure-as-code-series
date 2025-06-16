@@ -64,7 +64,7 @@ var dbSkus = {
 var storageName = replace('str${sqlServerName}', '-', '')
 
 // storage account for defender and audits.
-resource sqlStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource sqlStorageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: take(toLower(storageName), 24)
   location: resourceLocation
   kind: 'StorageV2'
@@ -82,7 +82,7 @@ resource sqlStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   tags: tags
 }
 
-resource sqlServer 'Microsoft.Sql/servers@2021-11-01-preview' = {
+resource sqlServer 'Microsoft.Sql/servers@2024-05-01-preview' = {
   name: sqlServerName
   location: resourceLocation
   identity: {
@@ -103,11 +103,12 @@ resource sqlServer 'Microsoft.Sql/servers@2021-11-01-preview' = {
   tags: tags
 }
 
-resource sqlAudit 'Microsoft.Sql/servers/auditingSettings@2021-11-01-preview' = if (env == 'prod') {
-  name: '${sqlServer.name}/default'
+resource sqlAudit 'Microsoft.Sql/servers/auditingSettings@2024-05-01-preview' = if (env == 'prod') {
+  parent: sqlServer
+  name: 'default'
   properties: {
     state: 'Enabled'
-    storageEndpoint: env == 'prod' ? '${sqlStorageAccount.properties.primaryEndpoints.blob}' : json('null')
+    storageEndpoint: env == 'prod' ? '${sqlStorageAccount.properties.primaryEndpoints.blob}' : null
     isAzureMonitorTargetEnabled: true
     storageAccountSubscriptionId: subscription().subscriptionId
     isStorageSecondaryKeyInUse: false
@@ -118,7 +119,7 @@ resource sqlAudit 'Microsoft.Sql/servers/auditingSettings@2021-11-01-preview' = 
 }
 
 
-resource sqlDb 'Microsoft.Sql/servers/databases@2021-11-01-preview' = {
+resource sqlDb 'Microsoft.Sql/servers/databases@2024-05-01-preview' = {
   name: databaseName
   parent: sqlServer
   location: resourceLocation
@@ -143,7 +144,7 @@ resource dblongTermBackup 'Microsoft.Sql/servers/databases/backupLongTermRetenti
   }
 }
 
-resource dbShortTermBackup 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2021-11-01-preview' = {
+resource dbShortTermBackup 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2024-05-01-preview' = {
   name: 'default'
   parent: sqlDb
   properties: {
@@ -152,7 +153,7 @@ resource dbShortTermBackup 'Microsoft.Sql/servers/databases/backupShortTermReten
 }
 
 // allow SQL server access to storage account
-resource rbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+resource rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(sqlServer.name, resourceGroup().id, sqlStorageAccount.id)
   scope: sqlStorageAccount
   properties: {
@@ -162,15 +163,16 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
   }
 }
 
-resource advancedSecurity 'Microsoft.Sql/servers/securityAlertPolicies@2021-11-01-preview' = {
-  name: '${sqlServer.name}/Default'
+resource advancedSecurity 'Microsoft.Sql/servers/securityAlertPolicies@2024-05-01-preview' = {
+  parent: sqlServer
+  name: 'Default'
   properties: {
     state: 'Enabled'
   }
 }
 
 // azure defender for SQL
-resource vulnerabilityAssessment 'Microsoft.Sql/servers/vulnerabilityAssessments@2021-11-01-preview' = {
+resource vulnerabilityAssessment 'Microsoft.Sql/servers/vulnerabilityAssessments@2024-05-01-preview' = {
   name: 'default'
   parent: sqlServer
   properties: {
@@ -195,8 +197,9 @@ module existingSubnets 'existing-vnet.bicep' = if (connectToVnet) {
   ]
 }
 
-resource sqlvnetRule 'Microsoft.Sql/servers/virtualNetworkRules@2021-11-01-preview' = if (connectToVnet) {
-  name: '${sqlServer.name}/${env}-connection'
+resource sqlvnetRule 'Microsoft.Sql/servers/virtualNetworkRules@2024-05-01-preview' = if (connectToVnet) {
+  parent: sqlServer
+  name: '${env}-connection'
   properties: {
     virtualNetworkSubnetId: connectToVnet ? existingSubnets.outputs.subnets.sql : '' // gh issue #2371
     ignoreMissingVnetServiceEndpoint: true

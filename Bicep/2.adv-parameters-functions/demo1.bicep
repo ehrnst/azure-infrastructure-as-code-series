@@ -7,7 +7,7 @@ param storageAccountName string
 param resourceLocation string = 'westeurope'
 
 
-resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+resource storage 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: toLower(storageAccountName) // force lowercase letters
   location: resourceLocation
   kind:'StorageV2'
@@ -19,6 +19,6 @@ resource storage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-09-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
   name: '${storage.name}/default/mycontainer'
 }

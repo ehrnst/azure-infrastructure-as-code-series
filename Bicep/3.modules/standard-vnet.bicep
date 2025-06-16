@@ -9,7 +9,7 @@ param env string
 param vnetName string = 'my-${env}-net'
 param resourceLocation string = resourceGroup().location
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-08-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: vnetName
   location: resourceLocation
   properties: {
